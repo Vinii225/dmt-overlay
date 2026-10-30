@@ -78,6 +78,7 @@ class FonteLMU:
         self._id_jogador = -1
         self._ultimo_scoring = 0.0
         self._em_tempo_real = False
+        self._passos_por_ponto = 0
 
     def abrir(self) -> bool:
         if self._memoria is not None:
@@ -128,6 +129,8 @@ class FonteLMU:
     def _ler_scoring(self, mem: mmap.mmap) -> None:
         info = ld.LMUScoringInfo.from_buffer_copy(mem, _OFF_INFO)
         self._em_tempo_real = bool(info.mInRealtime)
+        self._passos_por_ponto = info.mTrackLimitsStepsPerPoint
+        punicao = info.mTrackLimitsStepsPerPenalty / info.mTrackLimitsStepsPerPoint if info.mTrackLimitsStepsPerPoint else 0.0
         self._sessao = Sessao(
             tipo=tipo_sessao(info.mSession),
             pista=texto(info.mTrackName),
@@ -142,6 +145,7 @@ class FonteLMU:
             umidade_pista=numero(info.mAvgPathWetness),
             hora_do_dia=numero(info.mTimeOfDay),
             bandeira_amarela=info.mYellowFlagState not in (b"\x00", 0, b"\xff", -1),
+            track_limits_punicao=punicao,
         )
         total = max(0, min(info.mNumVehicles, _MAX_VEICULOS))
         carros = []
@@ -225,6 +229,7 @@ class FonteLMU:
             volta=t.mLapNumber,
             inicio_volta=numero(t.mLapStartET),
             volta_invalidada=bool(t.mLapInvalidated),
+            track_limits=t.mTrackLimitsSteps / self._passos_por_ponto if self._passos_por_ponto else 0.0,
             limitador=bool(t.mSpeedLimiterActive),
             abs_ativo=bool(t.mABSActive),
             tc_ativo=bool(t.mTCActive),

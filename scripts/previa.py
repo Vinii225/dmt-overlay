@@ -24,6 +24,7 @@ LAYOUT = {
     "pedais": (970, 80),
     "pneus": (1120, 80),
     "combustivel": (1120, 250),
+    "track_limits": (970, 250),
 }
 
 
