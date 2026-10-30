@@ -51,3 +51,26 @@ jobs:
             fi
           done < <(git log --format=%s --no-merges "origin/${{ github.base_ref }}..HEAD")
           exit $falhou
+
+  build:
+    name: Build Windows
+    needs: testes
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: python scripts/build.py
+      - name: Testar executável
+        shell: bash
+        run: |
+          "dist/DMT Overlay/DMT Overlay.exe" --version
+          du -sh "dist/DMT Overlay" dist/*.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmt-overlay-windows-${{ github.sha }}
+          path: dist/*.zip
+          retention-days: 7
