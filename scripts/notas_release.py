@@ -19,5 +19,6 @@ def secao(versao: str) -> str:
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")
     versao = sys.argv[1]
     print(secao(versao) + "\n" + INSTALACAO.format(versao=versao))
