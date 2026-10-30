@@ -19,6 +19,7 @@ def typedstruct(cls=None, pack=None):
         # Add _pack_
         if pack is not None:
             cls._pack_ = pack
+            cls._layout_ = "ms"
         # Add _fields_
         cls._fields_ = [(k, cls.__dict__[k]) for k in cls.__annotations__]
         return cls
