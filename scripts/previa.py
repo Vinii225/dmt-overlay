@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dmt_overlay.calculos.combustivel import CalculadoraCombustivel  # noqa: E402
+from dmt_overlay.calculos.multiclasse import alerta_multiclasse  # noqa: E402
 from dmt_overlay.config import Config  # noqa: E402
 from dmt_overlay.provedor import Quadro  # noqa: E402
 from dmt_overlay.telemetria.demo import FonteDemo  # noqa: E402
@@ -25,6 +26,7 @@ LAYOUT = {
     "pneus": (1120, 80),
     "combustivel": (1120, 250),
     "track_limits": (970, 250),
+    "multiclasse": (380, 200),
 }
 
 
@@ -33,6 +35,10 @@ def main() -> None:
     escala = float(sys.argv[2]) if len(sys.argv) > 2 else 1.0
     _app = QApplication([])
     fonte = FonteDemo()
+    for _ in range(4000):
+        if not alerta_multiclasse(fonte.ler(), 3.0, 2.5).vazio:
+            break
+        fonte._inicio -= 1.0
     calc = CalculadoraCombustivel()
     for volta in range(3):
         estado = fonte.ler()

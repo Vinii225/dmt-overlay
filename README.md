@@ -30,6 +30,8 @@
 | **Pneus** | Temperatura por faixa (esquerda/centro/direita), pressão, desgaste e temperatura do freio. Azul = frio, cinza = ideal, vermelho = quente. |
 | **Sessão** | Tipo de sessão, tempo ou voltas restantes, posição, hora na pista, temperatura e chuva. |
 | **Eletrônica** | Balanço de freio, TC, corte e slip do TC, ABS e mapa de motor. |
+| **Track limits** | Pontos de track limits acumulados e quanto falta para a punição. |
+| **Alerta multiclasse** | Só aparece quando precisa: carro mais rápido de outra classe chegando por trás, ou tráfego mais lento logo à frente. |
 
 ## Instalação
 
