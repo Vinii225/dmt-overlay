@@ -72,7 +72,7 @@ class CalculadoraEstrategia:
         self.reiniciar()
 
     def reiniciar(self) -> None:
-        self._inicio_tempo = -1.0
+        self._inicio_tempo: float | None = None
         self._inicio_volta = 0
 
     def atualizar(self, estado: Estado, combustivel: ResumoCombustivel) -> ResumoEstrategia:
@@ -80,7 +80,7 @@ class CalculadoraEstrategia:
         agora = estado.sessao.tempo_decorrido
         if carro is None:
             return ResumoEstrategia()
-        if carro.nos_boxes or self._inicio_tempo < 0 or agora < self._inicio_tempo:
+        if carro.nos_boxes or self._inicio_tempo is None or agora < self._inicio_tempo:
             self._inicio_tempo = agora
             self._inicio_volta = carro.voltas
         resumo = planejar(carro.voltas, combustivel)
