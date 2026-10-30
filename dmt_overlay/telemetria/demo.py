@@ -69,7 +69,7 @@ class FonteDemo:
                 )
             )
             anterior = vf
-        jogador_vf = next(c for c in progresso if c[1] == 0)[0]
+        jogador_vf, _, _, _, ritmo_jogador = next(c for c in progresso if c[1] == 0)
         fase = (jogador_vf % 1) * 2 * math.pi * 9
         acelerador = max(0.0, min(1.0, 0.6 + 0.6 * math.sin(fase)))
         freio = max(0.0, min(1.0, -0.9 * math.sin(fase) - 0.2))
@@ -103,6 +103,7 @@ class FonteDemo:
             bateria=0.5 + 0.4 * math.sin(t / 7),
             delta_melhor=0.9 * math.sin(t / 15),
             volta=voltas_jogador,
+            inicio_volta=t - (jogador_vf % 1) * ritmo_jogador,
             tc=4, tc_max=11, tc_corte=3, tc_slip=5, abs=6, abs_max=12, mapa_motor=2,
             balanco_freio=0.534,
             temp_agua=88.0,
