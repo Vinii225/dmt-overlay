@@ -3,6 +3,7 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,6 +23,7 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: pytest -q
       - name: Conferir versão da tag
+        if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
           versao=$(python -c "import dmt_overlay; print(dmt_overlay.__version__)")
@@ -30,7 +32,13 @@ jobs:
             exit 1
           fi
       - run: python scripts/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmt-overlay-windows
+          path: dist/*.zip
+          retention-days: 7
       - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
