@@ -55,6 +55,7 @@ Clique com o botão direito no ícone da bandeja:
 - **Aparência**: tamanho (80% a 150%) e opacidade.
 - **Esconder fora da pista**: some com os overlays no menu e na garagem.
 - **Fonte de dados → Demonstração**: dados simulados para posicionar tudo sem abrir o jogo.
+- **Avisar sobre atualizações**: ao abrir, o app confere se saiu versão nova e mostra um aviso com o link para baixar.
 
 Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`. Opções extras de cada widget (unidade de pressão em psi, km/h ou mph, número de carros no relativo, etc.) podem ser editadas nesse arquivo com o app fechado.
 

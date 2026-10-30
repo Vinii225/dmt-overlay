@@ -5,7 +5,8 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 
-from PySide6.QtGui import QAction, QActionGroup
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QAction, QActionGroup, QDesktopServices
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from . import __version__
@@ -37,6 +38,8 @@ class Bandeja(QSystemTrayIcon):
         self._montar_menu()
         self.setContextMenu(self.menu)
         self.activated.connect(self._ativado)
+        self.messageClicked.connect(self._abrir_atualizacao)
+        self._url_atualizacao = ""
         aplicativo.provedor.conexao_mudou.connect(self._conexao)
 
     def _montar_menu(self) -> None:
@@ -46,6 +49,9 @@ class Bandeja(QSystemTrayIcon):
         cabecalho.setEnabled(False)
         self.status = self.menu.addAction("Aguardando o jogo…")
         self.status.setEnabled(False)
+        self.acao_atualizar = self.menu.addAction("")
+        self.acao_atualizar.setVisible(False)
+        self.acao_atualizar.triggered.connect(self._abrir_atualizacao)
         self.menu.addSeparator()
 
         self.acao_travar = self.menu.addAction("Travar posições")
@@ -79,6 +85,10 @@ class Bandeja(QSystemTrayIcon):
         self.menu.addSeparator()
         self.menu.addAction("Restaurar posições").triggered.connect(app.restaurar_posicoes)
         self.menu.addAction("Abrir pasta de configuração").triggered.connect(lambda: abrir_pasta(pasta_config()))
+        verificar = self.menu.addAction("Avisar sobre atualizações")
+        verificar.setCheckable(True)
+        verificar.setChecked(geral["verificar_atualizacoes"])
+        verificar.toggled.connect(app.definir_verificar_atualizacoes)
         self.menu.addSeparator()
         self.menu.addAction("Sair").triggered.connect(QApplication.quit)
 
@@ -93,6 +103,16 @@ class Bandeja(QSystemTrayIcon):
     def _ativado(self, motivo) -> None:
         if motivo == QSystemTrayIcon.ActivationReason.DoubleClick:
             self.acao_travar.toggle()
+
+    def nova_versao(self, versao: str, url: str) -> None:
+        self._url_atualizacao = url
+        self.acao_atualizar.setText(f"Baixar nova versão {versao}")
+        self.acao_atualizar.setVisible(True)
+        self.showMessage("DMT Overlay", f"Nova versão {versao} disponível. Clique para baixar.", self.icon(), 8000)
+
+    def _abrir_atualizacao(self) -> None:
+        if self._url_atualizacao:
+            QDesktopServices.openUrl(QUrl(self._url_atualizacao))
 
     def _conexao(self, conectado: bool) -> None:
         texto = "Conectado ao jogo" if conectado else "Aguardando o jogo…"

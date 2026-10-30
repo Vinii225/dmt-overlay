@@ -9,6 +9,7 @@ from PySide6.QtCore import QLockFile
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from . import __version__
+from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
 from .config import Config, pasta_config
 from .provedor import Provedor, Quadro
@@ -44,12 +45,16 @@ class Aplicativo:
         self.provedor.novo_quadro.connect(self._novo_quadro)
         self.provedor.pilotando_mudou.connect(self._pilotando_mudou)
         self.bandeja = Bandeja(self)
+        self.verificador = VerificadorAtualizacao()
+        self.verificador.encontrada.connect(self.bandeja.nova_versao)
         self.travar(config.geral["travado"])
         self.atualizar_visibilidade()
 
     def iniciar(self) -> None:
         self.provedor.iniciar()
         self.bandeja.show()
+        if self.config.geral["verificar_atualizacoes"]:
+            self.verificador.verificar()
         log.info("DMT Overlay %s iniciado (fonte: %s)", __version__, self.provedor.fonte)
 
     def encerrar(self) -> None:
@@ -108,6 +113,10 @@ class Aplicativo:
     def definir_ocultar(self, ocultar: bool) -> None:
         self.config.geral["ocultar_fora_da_pista"] = ocultar
         self.atualizar_visibilidade()
+        self.salvar()
+
+    def definir_verificar_atualizacoes(self, ativo: bool) -> None:
+        self.config.geral["verificar_atualizacoes"] = ativo
         self.salvar()
 
     def trocar_fonte(self, chave: str) -> None:
