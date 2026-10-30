@@ -4,6 +4,10 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+## [0.2.0-beta.1] - 2026-10-30
+
+Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a janela de box em corrida longa.
+
 ### Novidades
 
 - Widget de track limits com barra até a punição.
@@ -22,5 +26,6 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 - Modo demonstração para posicionar os widgets sem o jogo aberto.
 - Configuração salva em `%APPDATA%\DMT Overlay`.
 
-[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...HEAD
+[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0-beta.1...HEAD
+[0.2.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0-beta.1
 [0.1.0]: https://github.com/Vinii225/dmt-overlay/releases/tag/v0.1.0
