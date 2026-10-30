@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+*.spec
+!dmt-overlay.spec
+.pytest_cache/
+.ruff_cache/
+*.log
+.vscode/
+.idea/
