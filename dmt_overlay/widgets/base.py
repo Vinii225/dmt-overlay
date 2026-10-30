@@ -86,6 +86,8 @@ class WidgetOverlay(QWidget):
             self.update()
 
     def paintEvent(self, _evento) -> None:
+        if self._dados is None and self._travado:
+            return
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
         p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
