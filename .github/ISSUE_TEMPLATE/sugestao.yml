@@ -1,0 +1,14 @@
+name: Sugestão
+description: Ideia de widget novo ou melhoria
+labels: [enhancement]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: O que você gostaria?
+    validations:
+      required: true
+  - type: textarea
+    id: motivo
+    attributes:
+      label: Em que situação isso ajuda na pista?
