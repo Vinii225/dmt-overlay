@@ -17,6 +17,7 @@ PADRAO_GERAL: dict[str, Any] = {
     "ocultar_fora_da_pista": True,
     "escala": 1.0,
     "opacidade": 1.0,
+    "verificar_atualizacoes": True,
 }
 
 
