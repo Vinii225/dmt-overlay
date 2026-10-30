@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build Windows
+    runs-on: windows-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Conferir versão da tag
+        shell: bash
+        run: |
+          versao=$(python -c "import dmt_overlay; print(dmt_overlay.__version__)")
+          if [ "v$versao" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} não bate com __version__ ($versao)"
+            exit 1
+          fi
+      - run: python scripts/build.py
+      - name: Publicar release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notas=$(python scripts/notas_release.py "${GITHUB_REF_NAME#v}")
+          prerelease=""
+          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then prerelease="--prerelease"; fi
+          gh release create "${GITHUB_REF_NAME}" dist/*.zip --title "DMT Overlay ${GITHUB_REF_NAME}" --notes "$notas" $prerelease
