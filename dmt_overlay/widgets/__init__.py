@@ -8,8 +8,9 @@ from .pedais import Pedais
 from .pneus import Pneus
 from .relativo import Relativo
 from .sessao import Sessao
+from .stint import Stint
 from .track_limits import TrackLimits
 
-WIDGETS = (Relativo, Classificacao, Delta, Motor, Pedais, Combustivel, Pneus, Sessao, Eletronica, TrackLimits, Multiclasse)
+WIDGETS = (Relativo, Classificacao, Delta, Motor, Pedais, Combustivel, Pneus, Sessao, Eletronica, TrackLimits, Multiclasse, Stint)
 
 __all__ = ["WIDGETS"]

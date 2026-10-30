@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dmt_overlay.calculos.combustivel import CalculadoraCombustivel  # noqa: E402
+from dmt_overlay.calculos.estrategia import CalculadoraEstrategia  # noqa: E402
 from dmt_overlay.calculos.multiclasse import alerta_multiclasse  # noqa: E402
 from dmt_overlay.config import Config  # noqa: E402
 from dmt_overlay.provedor import Quadro  # noqa: E402
@@ -27,6 +28,7 @@ LAYOUT = {
     "combustivel": (1120, 250),
     "track_limits": (970, 250),
     "multiclasse": (380, 200),
+    "stint": (380, 250),
 }
 
 
@@ -48,7 +50,11 @@ def main() -> None:
     estado = fonte.ler()
     estado.jogador.volta = 3
     estado.jogador.combustivel = 90 - 3 * 3.1
-    quadro = Quadro(estado, calc.atualizar(estado), 0.0)
+    resumo = calc.atualizar(estado)
+    estrategia = CalculadoraEstrategia()
+    estrategia.atualizar(estado, resumo)
+    estrategia._inicio_tempo -= 2533
+    quadro = Quadro(estado, resumo, 0.0, estrategia.atualizar(estado, resumo))
 
     config = Config(Path(tempfile.mkdtemp()) / "config.json")
     largura, altura = round(1370 * escala), round(400 * escala)
