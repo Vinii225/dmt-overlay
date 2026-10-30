@@ -4,6 +4,11 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+### Novidades
+
+- Widget de track limits com barra até a punição.
+- Alerta multiclasse: carro mais rápido chegando e tráfego mais lento à frente.
+
 ## [0.1.0] - 2026-10-30
 
 ### Novidades
