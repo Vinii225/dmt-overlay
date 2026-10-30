@@ -104,6 +104,7 @@ class FonteDemo:
             delta_melhor=0.9 * math.sin(t / 15),
             volta=voltas_jogador,
             inicio_volta=t - (jogador_vf % 1) * ritmo_jogador,
+            track_limits=min(3.5, int(jogador_vf / 4) * 0.5),
             tc=4, tc_max=11, tc_corte=3, tc_slip=5, abs=6, abs_max=12, mapa_motor=2,
             balanco_freio=0.534,
             temp_agua=88.0,
@@ -125,5 +126,6 @@ class FonteDemo:
             temp_ar=24.0,
             temp_pista=35.0,
             hora_do_dia=15 * 3600 + t,
+            track_limits_punicao=4.0,
         )
         return Estado(conectado=True, pilotando=True, sessao=sessao, jogador=jogador, carros=carros)

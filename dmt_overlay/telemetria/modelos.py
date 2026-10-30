@@ -52,6 +52,7 @@ class Jogador:
     volta: int = 0
     inicio_volta: float = 0.0
     volta_invalidada: bool = False
+    track_limits: float = 0.0
     limitador: bool = False
     abs_ativo: bool = False
     tc_ativo: bool = False
@@ -107,6 +108,7 @@ class Sessao:
     umidade_pista: float = 0.0
     hora_do_dia: float = 0.0
     bandeira_amarela: bool = False
+    track_limits_punicao: float = 0.0
 
     @property
     def tempo_restante(self) -> float:
