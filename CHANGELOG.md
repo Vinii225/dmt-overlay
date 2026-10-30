@@ -9,6 +9,7 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 - Widget de track limits com barra até a punição.
 - Alerta multiclasse: carro mais rápido chegando e tráfego mais lento à frente.
 - Widget de stint e estratégia: janela de box, paradas restantes e quanto abastecer.
+- Radar de proximidade com alerta de carro lado a lado.
 - Aviso na bandeja quando sai versão nova (pode ser desligado no menu).
 
 ## [0.1.0] - 2026-10-30
