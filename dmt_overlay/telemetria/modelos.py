@@ -121,6 +121,14 @@ class Sessao:
         return 0 < self.voltas_max < 100000 and self.tempo_final <= 0
 
 
+@dataclass(slots=True, frozen=True)
+class Posicao:
+    x: float
+    y: float
+    z: float
+    orientacao: tuple[float, ...]
+
+
 @dataclass(slots=True)
 class Estado:
     conectado: bool = False
@@ -128,6 +136,7 @@ class Estado:
     sessao: Sessao = field(default_factory=Sessao)
     jogador: Jogador = field(default_factory=Jogador)
     carros: list[Carro] = field(default_factory=list)
+    posicoes: dict[int, Posicao] = field(default_factory=dict)
 
     @property
     def carro_jogador(self) -> Carro | None:
