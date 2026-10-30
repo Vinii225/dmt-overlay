@@ -1,0 +1,37 @@
+name: Bug
+description: Algo não funciona como deveria
+labels: [bug]
+body:
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o problema e o que você esperava que acontecesse.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Como reproduzir
+      placeholder: |
+        1. Abri o LMU em corrida multiclasse
+        2. Liguei o widget de relativo
+        3. ...
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do DMT Overlay
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: widget
+    attributes:
+      label: Widget afetado
+      options: [Relativo, Classificação, Delta, Marcha e RPM, Pedais, Combustível, Pneus, Sessão, Eletrônica, Bandeja/menu, Outro]
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: Anexe o `dmt-overlay.log` (menu da bandeja → Abrir pasta de configuração).
+      render: text

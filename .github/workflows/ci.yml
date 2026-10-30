@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Lint e testes (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Dependências do Qt no Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libxkbcommon0 libfontconfig1
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest -q
+
+  commits:
+    name: Commits semânticos
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validar mensagens
+        run: |
+          padrao='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9/-]+\))?!?: .+'
+          falhou=0
+          while IFS= read -r msg; do
+            if ! grep -qE "$padrao" <<< "$msg"; then
+              echo "::error::Commit fora do padrão: $msg"
+              falhou=1
+            fi
+          done < <(git log --format=%s --no-merges "origin/${{ github.base_ref }}..HEAD")
+          exit $falhou
+
+  build:
+    name: Build Windows
+    needs: testes
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: python scripts/build.py
+      - name: Testar executável
+        shell: bash
+        run: |
+          "dist/DMT Overlay/DMT Overlay.exe" --version
+          du -sh "dist/DMT Overlay" dist/*.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmt-overlay-windows-${{ github.sha }}
+          path: dist/*.zip
+          retention-days: 7
