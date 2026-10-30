@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from PySide6.QtCore import QObject, QTimer, Signal
 
 from .calculos.combustivel import CalculadoraCombustivel, ResumoCombustivel
+from .calculos.estrategia import CalculadoraEstrategia, ResumoEstrategia
 from .telemetria.demo import FonteDemo
 from .telemetria.lmu import FonteLMU
 from .telemetria.modelos import Estado
@@ -21,6 +22,7 @@ class Quadro:
     estado: Estado = field(default_factory=Estado)
     combustivel: ResumoCombustivel = field(default_factory=ResumoCombustivel)
     instante: float = 0.0
+    estrategia: ResumoEstrategia = field(default_factory=ResumoEstrategia)
 
 
 class Provedor(QObject):
@@ -33,6 +35,7 @@ class Provedor(QObject):
         self._fonte = FONTES.get(fonte, FonteLMU)()
         self._chave_fonte = fonte
         self._combustivel = CalculadoraCombustivel()
+        self._estrategia = CalculadoraEstrategia()
         self._conectado = False
         self._pilotando = False
         self._identidade_sessao: tuple | None = None
@@ -54,6 +57,7 @@ class Provedor(QObject):
         self._fonte = FONTES[chave]()
         self._chave_fonte = chave
         self._combustivel.reiniciar()
+        self._estrategia.reiniciar()
         log.info("fonte de dados: %s", self._fonte.nome)
 
     def iniciar(self) -> None:
@@ -71,14 +75,19 @@ class Provedor(QObject):
             self._fonte.fechar()
             estado = Estado()
         self._detectar_nova_sessao(estado)
-        resumo = self._combustivel.atualizar(estado) if estado.pilotando else self._combustivel_vazio()
+        if estado.pilotando:
+            resumo = self._combustivel.atualizar(estado)
+            estrategia = self._estrategia.atualizar(estado, resumo)
+        else:
+            resumo = ResumoCombustivel()
+            estrategia = ResumoEstrategia()
         if estado.conectado != self._conectado:
             self._conectado = estado.conectado
             self.conexao_mudou.emit(estado.conectado)
         if estado.pilotando != self._pilotando:
             self._pilotando = estado.pilotando
             self.pilotando_mudou.emit(estado.pilotando)
-        self.novo_quadro.emit(Quadro(estado, resumo, time.monotonic()))
+        self.novo_quadro.emit(Quadro(estado, resumo, time.monotonic(), estrategia))
 
     def _detectar_nova_sessao(self, estado: Estado) -> None:
         s = estado.sessao
@@ -86,6 +95,4 @@ class Provedor(QObject):
         if estado.conectado and identidade != self._identidade_sessao:
             self._identidade_sessao = identidade
             self._combustivel.reiniciar()
-
-    def _combustivel_vazio(self) -> ResumoCombustivel:
-        return ResumoCombustivel()
+            self._estrategia.reiniciar()
