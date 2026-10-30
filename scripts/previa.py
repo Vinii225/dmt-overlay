@@ -1,3 +1,4 @@
+import math
 import sys
 import tempfile
 from pathlib import Path
@@ -14,6 +15,7 @@ from dmt_overlay.calculos.multiclasse import alerta_multiclasse  # noqa: E402
 from dmt_overlay.config import Config  # noqa: E402
 from dmt_overlay.provedor import Quadro  # noqa: E402
 from dmt_overlay.telemetria.demo import FonteDemo  # noqa: E402
+from dmt_overlay.telemetria.modelos import Posicao  # noqa: E402
 from dmt_overlay.widgets import WIDGETS  # noqa: E402
 
 LAYOUT = {
@@ -29,7 +31,13 @@ LAYOUT = {
     "track_limits": (970, 250),
     "multiclasse": (380, 200),
     "stint": (380, 250),
+    "radar": (20, 200),
 }
+
+
+def girar(theta: float) -> tuple[float, ...]:
+    c, s = math.cos(theta), math.sin(theta)
+    return (c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c)
 
 
 def main() -> None:
@@ -50,6 +58,10 @@ def main() -> None:
     estado = fonte.ler()
     estado.jogador.volta = 3
     estado.jogador.combustivel = 90 - 3 * 3.1
+    eu = estado.posicoes[0]
+    vizinhos = [c.id for c in estado.carros if not c.jogador][:2]
+    estado.posicoes[vizinhos[0]] = Posicao(eu.x - 2.6, 0.0, eu.z - 1.5, girar(0.06))
+    estado.posicoes[vizinhos[1]] = Posicao(eu.x + 0.4, 0.0, eu.z - 9.0, girar(-0.04))
     resumo = calc.atualizar(estado)
     estrategia = CalculadoraEstrategia()
     estrategia.atualizar(estado, resumo)

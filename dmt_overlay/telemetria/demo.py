@@ -4,7 +4,7 @@ import math
 import random
 import time
 
-from .modelos import Carro, Estado, Jogador, Pneu, Sessao, TipoSessao
+from .modelos import Carro, Estado, Jogador, Pneu, Posicao, Sessao, TipoSessao
 
 TAMANHO_PISTA = 13626.0
 VOLTA_BASE = 210.0
@@ -128,4 +128,8 @@ class FonteDemo:
             hora_do_dia=15 * 3600 + t,
             track_limits_punicao=4.0,
         )
-        return Estado(conectado=True, pilotando=True, sessao=sessao, jogador=jogador, carros=carros)
+        identidade = (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)
+        posicoes = {
+            c.id: Posicao(2.4 * math.sin(c.id * 1.7 + t / 9), 0.0, -c.distancia_volta, identidade) for c in carros
+        }
+        return Estado(conectado=True, pilotando=True, sessao=sessao, jogador=jogador, carros=carros, posicoes=posicoes)

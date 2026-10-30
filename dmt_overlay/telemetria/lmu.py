@@ -9,7 +9,7 @@ import sys
 import time
 
 from ..terceiros.pylmu import lmu_data as ld
-from .modelos import Carro, Estado, Jogador, Pneu, Sessao, TipoSessao
+from .modelos import Carro, Estado, Jogador, Pneu, Posicao, Sessao, TipoSessao
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +31,8 @@ _OFF_TEM_VEICULO = _OFF_TELEMETRIA + ld.LMUTelemetryData.playerHasVehicle.offset
 _OFF_TELE = _OFF_TELEMETRIA + ld.LMUTelemetryData.telemInfo.offset
 _TAM_TELE = ctypes.sizeof(ld.LMUVehicleTelemetry)
 _OFF_TELE_ID = ld.LMUVehicleTelemetry.mID.offset
+_OFF_TELE_POS = ld.LMUVehicleTelemetry.mPos.offset
+_OFF_TELE_ORI = ld.LMUVehicleTelemetry.mOri.offset
 _MAX_VEICULOS = ld.LMUConstants.MAX_MAPPED_VEHICLES
 
 
@@ -118,12 +120,14 @@ class FonteLMU:
 
         tem_veiculo = bool(mem[_OFF_TEM_VEICULO])
         jogador = self._ler_jogador(mem) if tem_veiculo else Jogador()
+        posicoes = self._ler_posicoes(mem) if tem_veiculo else {}
         return Estado(
             conectado=ativo,
             pilotando=ativo and self._em_tempo_real and tem_veiculo,
             sessao=self._sessao,
             jogador=jogador,
             carros=self._carros,
+            posicoes=posicoes,
         )
 
     def _ler_scoring(self, mem: mmap.mmap) -> None:
@@ -187,6 +191,18 @@ class FonteLMU:
             if self._id_tele(mem, i) == self._id_jogador:
                 return i
         return indice if indice < ativos else -1
+
+    @staticmethod
+    def _ler_posicoes(mem: mmap.mmap) -> dict[int, Posicao]:
+        ativos = min(mem[_OFF_ATIVOS], _MAX_VEICULOS)
+        posicoes = {}
+        for i in range(ativos):
+            base = _OFF_TELE + i * _TAM_TELE
+            id_ = struct.unpack_from("<i", mem, base + _OFF_TELE_ID)[0]
+            x, y, z = struct.unpack_from("<3d", mem, base + _OFF_TELE_POS)
+            orientacao = struct.unpack_from("<9d", mem, base + _OFF_TELE_ORI)
+            posicoes[id_] = Posicao(numero(x), numero(y), numero(z), tuple(numero(v) for v in orientacao))
+        return posicoes
 
     @staticmethod
     def _id_tele(mem: mmap.mmap, indice: int) -> int:
