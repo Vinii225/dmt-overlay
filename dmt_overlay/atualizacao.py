@@ -16,8 +16,11 @@ URL_RELEASES = "https://api.github.com/repos/Vinii225/dmt-overlay/releases/lates
 
 
 def versao_tupla(texto: str) -> tuple[int, ...]:
-    achado = re.match(r"v?(\d+)\.(\d+)\.(\d+)", texto.strip())
-    return tuple(int(x) for x in achado.groups()) if achado else (0, 0, 0)
+    achado = re.match(r"v?(\d+)\.(\d+)\.(\d+)(-)?", texto.strip())
+    if not achado:
+        return (0, 0, 0, 0)
+    final = 0 if achado.group(4) else 1
+    return (*(int(x) for x in achado.groups()[:3]), final)
 
 
 def mais_nova(remota: str, local: str = __version__) -> bool:
