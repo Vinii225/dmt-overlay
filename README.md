@@ -62,10 +62,14 @@ Clique com o botão direito no ícone da bandeja. O menu tem só o que se usa du
 
 Tudo vale na hora e é salvo sozinho, sem botão de salvar.
 
-- **Geral**: travar e restaurar posições, esconder fora da pista, fonte de dados (**Demonstração** simula dados para posicionar tudo sem abrir o jogo), taxa de atualização, gravação das voltas e aviso de atualização.
+- **Geral**: travar e restaurar posições, layout separado por classe, esconder fora da pista, fonte de dados (**Demonstração** simula dados para posicionar tudo sem abrir o jogo), taxa de atualização, gravação das voltas e aviso de atualização.
 - **Aparência**: tamanho (80% a 150%) e opacidade.
 - **Atalhos**: clique no campo e aperte a combinação nova.
 - **Uma página por widget**: liga e desliga, além das opções dele (unidade de pressão e velocidade, carros no relativo, luz de troca, alcance do radar, temperatura ideal do freio, etc.) com **Restaurar padrão**.
+
+### Layout por classe
+
+Ligue **Configurações → Geral → Layout separado por classe** para cada classe (Hypercar, LMP2, GT3…) ter as próprias posições e os próprios widgets ligados. Por exemplo, o radar mais à vista no GT3 e a energia virtual em destaque no Hypercar. A troca acontece sozinha quando você entra na pista com um carro de outra classe. As opções de cada widget (unidades, alcance etc.) continuam valendo para todas.
 
 ### Atalhos de teclado
 

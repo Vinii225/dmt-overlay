@@ -16,6 +16,7 @@ from .bandeja import Bandeja
 from .config import Config, pasta_config, pasta_voltas
 from .configuracoes import JanelaConfiguracoes
 from .gravador import GravadorVoltas
+from .layouts import aplicar, capturar, chave_classe
 from .provedor import Provedor, Quadro
 from .widgets import WIDGETS
 from .widgets.base import WidgetOverlay
@@ -41,6 +42,8 @@ class Aplicativo:
         self.provedor = Provedor(fonte, config.geral["taxa_atualizacao"])
         self.pilotando = False
         self.ocultos = False
+        self.classe = ""
+        self.nome_classe = ""
         self._ouvintes: list[Callable[[], None]] = []
         self.widgets: dict[str, WidgetOverlay] = {}
         for classe in WIDGETS:
@@ -112,13 +115,47 @@ class Aplicativo:
         janela.raise_()
         janela.activateWindow()
 
+    def _classe_detectada(self, nome: str) -> None:
+        chave = chave_classe(nome)
+        if chave == self.classe:
+            return
+        self._guardar_layout()
+        self.classe, self.nome_classe = chave, nome
+        if self.config.geral["layout_por_classe"]:
+            salvo = self.config.geral["layouts"].get(chave)
+            if salvo:
+                self._aplicar_layout(salvo)
+                log.info("layout da classe %s aplicado", nome)
+        self.salvar()
+        self.notificar()
+
+    def _guardar_layout(self) -> None:
+        if self.config.geral["layout_por_classe"] and self.classe:
+            self.config.geral["layouts"][self.classe] = capturar({n: w.config for n, w in self.widgets.items()})
+
+    def _aplicar_layout(self, layout: dict) -> None:
+        aplicar(layout, {n: w.config for n, w in self.widgets.items()})
+        for widget in self.widgets.values():
+            widget.move(widget.config["x"], widget.config["y"])
+        self.atualizar_visibilidade()
+
+    def definir_layout_por_classe(self, ativo: bool) -> None:
+        self.config.geral["layout_por_classe"] = ativo
+        self.salvar()
+        self.notificar()
+
     def salvar(self) -> None:
+        # Cada mudança de posição ou de widget ligado fica guardada no layout da classe atual.
+        self._guardar_layout()
         try:
             self.config.salvar()
         except OSError:
             log.exception("não foi possível salvar a configuração")
 
     def _novo_quadro(self, quadro: Quadro) -> None:
+        carro = quadro.estado.carro_jogador
+        if quadro.estado.pilotando and carro is not None and carro.classe:
+            self._classe_detectada(carro.classe)
         for widget in self.widgets.values():
             if widget.isVisible():
                 widget.atualizar(quadro)

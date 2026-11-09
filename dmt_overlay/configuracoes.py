@@ -132,7 +132,7 @@ class _Pagina(QScrollArea):
         self.layout_.addWidget(_linha())
         self._grade = None
 
-    def campo(self, rotulo: str, controle: QWidget, ajuda: str = "") -> None:
+    def campo(self, rotulo: str, controle: QWidget, ajuda: str = "") -> QLabel | None:
         """Rótulo à esquerda, controle à direita e a ajuda logo abaixo do rótulo."""
         if self._grade is None:
             self._grade = QGridLayout()
@@ -143,9 +143,12 @@ class _Pagina(QScrollArea):
         linha = self._grade.rowCount()
         self._grade.addWidget(_rotulo(rotulo), linha, 0)
         self._grade.addWidget(controle, linha, 1, 2 if ajuda else 1, 1, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        texto_ajuda = None
         if ajuda:
-            self._grade.addWidget(_rotulo(ajuda, "ajuda"), linha + 1, 0)
+            texto_ajuda = _rotulo(ajuda, "ajuda")
+            self._grade.addWidget(texto_ajuda, linha + 1, 0)
         self._grade.setRowMinimumHeight(self._grade.rowCount(), 8)
+        return texto_ajuda
 
     def adicionar(self, widget: QWidget) -> None:
         self.layout_.addWidget(widget)
@@ -264,6 +267,14 @@ class JanelaConfiguracoes(QWidget):
         pagina.adicionar(
             _rotulo("Destravado, arraste os widgets (eles encaixam nas bordas). Trave para o clique voltar ao jogo.", "ajuda")
         )
+        explicacao = "Guarda posições e widgets ligados de cada classe (Hypercar, LMP2, GT3…) e troca sozinho ao mudar de carro."
+        ajuda_classe = pagina.campo(
+            "Layout separado por classe",
+            self._caixa(lambda: geral["layout_por_classe"], app.definir_layout_por_classe),
+            explicacao,
+        )
+        texto_classe = lambda r, v: r.setText(f"{explicacao}\nClasse atual: {v or 'nenhum carro na pista ainda'}.")  # noqa: E731
+        self._ligar(ajuda_classe, lambda: app.nome_classe, texto_classe)
         pagina.campo(
             "Esconder fora da pista",
             self._caixa(lambda: geral["ocultar_fora_da_pista"], app.definir_ocultar),
