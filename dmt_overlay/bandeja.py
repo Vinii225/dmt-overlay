@@ -54,10 +54,14 @@ class Bandeja(QSystemTrayIcon):
         self.acao_atualizar.triggered.connect(self._abrir_atualizacao)
         self.menu.addSeparator()
 
-        self.acao_travar = self.menu.addAction("Travar posições")
+        self.acao_travar = self.menu.addAction(self._com_atalho("Travar posições", "travar"))
         self.acao_travar.setCheckable(True)
         self.acao_travar.setChecked(geral["travado"])
         self.acao_travar.toggled.connect(app.travar)
+
+        self.acao_ocultar = self.menu.addAction(self._com_atalho("Esconder overlays", "mostrar_ocultar"))
+        self.acao_ocultar.setCheckable(True)
+        self.acao_ocultar.toggled.connect(app.ocultar)
 
         widgets = self.menu.addMenu("Widgets")
         for nome, widget in app.widgets.items():
@@ -91,6 +95,10 @@ class Bandeja(QSystemTrayIcon):
         verificar.toggled.connect(app.definir_verificar_atualizacoes)
         self.menu.addSeparator()
         self.menu.addAction("Sair").triggered.connect(QApplication.quit)
+
+    def _com_atalho(self, texto: str, nome: str) -> str:
+        atalho = self.aplicativo.atalhos.registrados.get(nome)
+        return f"{texto}\t{atalho}" if atalho else texto
 
     @staticmethod
     def _grupo(menu: QMenu, valores, atual: float, callback) -> None:

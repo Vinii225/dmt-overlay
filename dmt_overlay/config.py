@@ -18,6 +18,7 @@ PADRAO_GERAL: dict[str, Any] = {
     "escala": 1.0,
     "opacidade": 1.0,
     "verificar_atualizacoes": True,
+    "atalhos": {"mostrar_ocultar": "Ctrl+Shift+H", "travar": "Ctrl+Shift+L"},
 }
 
 

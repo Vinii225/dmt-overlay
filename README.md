@@ -53,11 +53,23 @@
 Clique com o botão direito no ícone da bandeja:
 
 - **Travar posições**: destrave para arrastar os widgets (eles encaixam nas bordas da tela) e trave de novo para o clique passar para o jogo. Atalho: duplo clique no ícone.
+- **Esconder overlays**: some com todos os widgets na hora, sem desligar nenhum.
 - **Widgets**: liga e desliga cada um.
 - **Aparência**: tamanho (80% a 150%) e opacidade.
 - **Esconder fora da pista**: some com os overlays no menu e na garagem.
 - **Fonte de dados → Demonstração**: dados simulados para posicionar tudo sem abrir o jogo.
 - **Avisar sobre atualizações**: ao abrir, o app confere se saiu versão nova e mostra um aviso com o link para baixar.
+
+### Atalhos de teclado
+
+Funcionam com o jogo em foco, sem precisar tirar a mão do volante por muito tempo:
+
+| Atalho | Ação |
+|---|---|
+| `Ctrl+Shift+H` | Esconder / mostrar todos os overlays |
+| `Ctrl+Shift+L` | Travar / destravar posições |
+
+Para trocar, edite `geral.atalhos` no `config.json` com o app fechado (ex.: `"travar": "Ctrl+Alt+F9"`; deixe `""` para desligar). Valem `Ctrl`, `Shift`, `Alt` e `Win` com uma letra, número, `F1`–`F24`, `Insert`, `Delete`, `Home`, `End`, `PgUp`, `PgDown`, `Pause` ou `Space`. Se outro programa já usa a combinação, ela fica de fora e o menu não mostra o atalho.
 
 Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`. Opções extras de cada widget (unidade de pressão em psi, km/h ou mph, número de carros no relativo, etc.) podem ser editadas nesse arquivo com o app fechado.
 
