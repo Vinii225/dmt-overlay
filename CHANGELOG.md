@@ -4,6 +4,10 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+### Novidades
+
+- Atalhos globais: `Ctrl+Shift+H` esconde/mostra os overlays e `Ctrl+Shift+L` trava/destrava, com o jogo em foco. Configuráveis no `config.json`.
+
 ## [0.2.0] - 2026-11-09
 
 Versão estável da 0.2.0, testada em pista a partir da beta.

@@ -9,6 +9,7 @@ from PySide6.QtCore import QLockFile
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from . import __version__
+from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
 from .config import Config, pasta_config
@@ -36,6 +37,7 @@ class Aplicativo:
         self.config = config
         self.provedor = Provedor(fonte, config.geral["taxa_atualizacao"])
         self.pilotando = False
+        self.ocultos = False
         self.widgets: dict[str, WidgetOverlay] = {}
         for classe in WIDGETS:
             dados = config.widget(classe.nome, classe.padrao())
@@ -44,6 +46,11 @@ class Aplicativo:
             self.widgets[classe.nome] = widget
         self.provedor.novo_quadro.connect(self._novo_quadro)
         self.provedor.pilotando_mudou.connect(self._pilotando_mudou)
+        self.atalhos = AtalhosGlobais()
+        self.atalhos.acionado.connect(self._atalho)
+        for nome, sequencia in config.geral["atalhos"].items():
+            if sequencia:
+                self.atalhos.registrar(nome, sequencia)
         self.bandeja = Bandeja(self)
         self.verificador = VerificadorAtualizacao()
         self.verificador.encontrada.connect(self.bandeja.nova_versao)
@@ -59,6 +66,7 @@ class Aplicativo:
 
     def encerrar(self) -> None:
         self.provedor.parar()
+        self.atalhos.liberar()
         self.salvar()
         self.bandeja.hide()
 
@@ -80,10 +88,24 @@ class Aplicativo:
     def atualizar_visibilidade(self) -> None:
         geral = self.config.geral
         mostrar = self.pilotando or not geral["ocultar_fora_da_pista"] or not geral["travado"]
+        mostrar = mostrar and not self.ocultos
         for widget in self.widgets.values():
             widget.setVisible(mostrar and widget.config["ativo"])
 
+    def _atalho(self, nome: str) -> None:
+        if nome == "mostrar_ocultar":
+            self.bandeja.acao_ocultar.toggle()
+        elif nome == "travar":
+            self.bandeja.acao_travar.toggle()
+
+    def ocultar(self, ocultos: bool) -> None:
+        self.ocultos = ocultos
+        self.atualizar_visibilidade()
+
     def travar(self, travado: bool) -> None:
+        if not travado and self.ocultos:
+            # Destravar é para posicionar: não faz sentido continuar escondido.
+            self.bandeja.acao_ocultar.setChecked(False)
         self.config.geral["travado"] = travado
         for widget in self.widgets.values():
             widget.travar(travado)
