@@ -58,6 +58,7 @@ Clique com o botão direito no ícone da bandeja:
 - **Aparência**: tamanho (80% a 150%) e opacidade.
 - **Esconder fora da pista**: some com os overlays no menu e na garagem.
 - **Fonte de dados → Demonstração**: dados simulados para posicionar tudo sem abrir o jogo.
+- **Gravar voltas em CSV**: salva cada volta para análise depois da corrida (veja abaixo). **Abrir voltas gravadas** abre a pasta.
 - **Avisar sobre atualizações**: ao abrir, o app confere se saiu versão nova e mostra um aviso com o link para baixar.
 
 ### Atalhos de teclado
@@ -70,6 +71,19 @@ Funcionam com o jogo em foco, sem precisar tirar a mão do volante por muito tem
 | `Ctrl+Shift+L` | Travar / destravar posições |
 
 Para trocar, edite `geral.atalhos` no `config.json` com o app fechado (ex.: `"travar": "Ctrl+Alt+F9"`; deixe `""` para desligar). Valem `Ctrl`, `Shift`, `Alt` e `Win` com uma letra, número, `F1`–`F24`, `Insert`, `Delete`, `Home`, `End`, `PgUp`, `PgDown`, `Pause` ou `Space`. Se outro programa já usa a combinação, ela fica de fora e o menu não mostra o atalho.
+
+### Voltas gravadas
+
+Com o jogo conectado, cada volta completa vira uma linha em `%APPDATA%\DMT Overlay\voltas\`, um arquivo por sessão (ex.: `2026-11-09_1530_Le-Mans_Corrida.csv`). O arquivo usa `;` e vírgula decimal, então abre direto no Excel em português; no Google Sheets, importe com separador ponto e vírgula.
+
+Cada linha traz:
+
+- **Volta**: stint, volta (total e dentro do stint), tempo, se foi válida, se passou pelo box e a posição.
+- **Consumo**: combustível gasto na volta e no fim dela, e o mesmo para energia virtual (%).
+- **Pneus** (DE, DD, TE, TD): temperatura média da volta, pressão, desgaste na volta e quanto resta.
+- **Condições**: composto, temperatura da pista e do ar e chuva.
+
+Um stint novo começa quando há serviço no box (abastecimento ou troca de pneu); passar pelo pit lane sem parar não conta. Na volta em que houve serviço, consumo e desgaste ficam em branco porque não dá para medir. A primeira volta depois de abrir o app também fica de fora, porque começou pela metade.
 
 Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`. Opções extras de cada widget (unidade de pressão em psi, km/h ou mph, número de carros no relativo, etc.) podem ser editadas nesse arquivo com o app fechado.
 

@@ -10,7 +10,7 @@ from PySide6.QtGui import QAction, QActionGroup, QDesktopServices
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from . import __version__
-from .config import pasta_config
+from .config import pasta_config, pasta_voltas
 from .icone import icone
 
 if TYPE_CHECKING:
@@ -85,6 +85,12 @@ class Bandeja(QSystemTrayIcon):
             acao = QAction(nome, grupo, checkable=True, checked=chave == app.provedor.fonte)
             acao.triggered.connect(lambda _=False, c=chave: app.trocar_fonte(c))
             fontes.addAction(acao)
+
+        gravar = self.menu.addAction("Gravar voltas em CSV")
+        gravar.setCheckable(True)
+        gravar.setChecked(geral["gravar_voltas"])
+        gravar.toggled.connect(app.definir_gravar_voltas)
+        self.menu.addAction("Abrir voltas gravadas").triggered.connect(lambda: abrir_pasta(pasta_voltas()))
 
         self.menu.addSeparator()
         self.menu.addAction("Restaurar posições").triggered.connect(app.restaurar_posicoes)
