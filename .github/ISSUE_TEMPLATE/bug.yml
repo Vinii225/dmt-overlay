@@ -21,17 +21,36 @@ body:
     id: versao
     attributes:
       label: Versão do DMT Overlay
-      placeholder: v0.1.0
+      description: Aparece no topo do menu da bandeja e no rodapé das configurações.
+      placeholder: v0.2.0
     validations:
       required: true
   - type: dropdown
     id: widget
     attributes:
       label: Widget afetado
-      options: [Relativo, Classificação, Delta, Marcha e RPM, Pedais, Combustível, Pneus, Sessão, Eletrônica, Bandeja/menu, Outro]
+      options:
+        - Relativo
+        - Classificação
+        - Delta
+        - Marcha e RPM
+        - Pedais
+        - Combustível
+        - Pneus
+        - Sessão
+        - Eletrônica
+        - Track limits
+        - Alerta multiclasse
+        - Stint e estratégia
+        - Radar
+        - Configurações / bandeja
+        - Atalhos
+        - Voltas gravadas (CSV)
+        - Layout por classe
+        - Outro
   - type: textarea
     id: log
     attributes:
       label: Log
-      description: Anexe o `dmt-overlay.log` (menu da bandeja → Abrir pasta de configuração).
+      description: Anexe o `dmt-overlay.log` (Configurações → Geral → Abrir pasta de configuração).
       render: text

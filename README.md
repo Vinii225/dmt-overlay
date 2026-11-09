@@ -32,7 +32,7 @@
 | **Eletrônica** | Balanço de freio, TC, corte e slip do TC, ABS e mapa de motor. |
 | **Track limits** | Pontos de track limits acumulados e quanto falta para a punição. |
 | **Stint e estratégia** | Tempo e voltas do stint, janela de box (primeira e última volta para parar), paradas restantes e quanto abastecer de combustível e energia virtual. |
-| **Radar** | Só aparece com carro a até 15 m: mostra os carros ao redor na cor da classe e acende a lateral quando há alguém lado a lado. |
+| **Radar** | Só aparece com carro por perto (15 m por padrão, ajustável): mostra os carros ao redor na cor da classe e acende a lateral quando há alguém lado a lado. |
 | **Alerta multiclasse** | Só aparece quando precisa: carro mais rápido de outra classe chegando por trás, ou tráfego mais lento logo à frente. |
 
 ## Instalação
@@ -61,6 +61,8 @@ Clique com o botão direito no ícone da bandeja. O menu tem só o que se usa du
 ### Configurações
 
 Tudo vale na hora e é salvo sozinho, sem botão de salvar.
+
+![Janela de configurações](docs/configuracoes.png)
 
 - **Geral**: travar e restaurar posições, layout separado por classe, esconder fora da pista, fonte de dados (**Demonstração** simula dados para posicionar tudo sem abrir o jogo), taxa de atualização, gravação das voltas e aviso de atualização.
 - **Aparência**: tamanho (80% a 150%) e opacidade.
@@ -95,7 +97,23 @@ Cada linha traz:
 
 Um stint novo começa quando há serviço no box (abastecimento ou troca de pneu); passar pelo pit lane sem parar não conta. Na volta em que houve serviço, consumo e desgaste ficam em branco porque não dá para medir. A primeira volta depois de abrir o app também fica de fora, porque começou pela metade.
 
-Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`.
+### Atualizações
+
+Ao abrir, o app confere no GitHub se saiu versão nova. Se saiu, aparece um aviso ao lado do relógio e o item **Baixar nova versão** no topo do menu da bandeja, que abre a página da release. Para atualizar, baixe o `.zip`, feche o app e extraia por cima da pasta antiga: suas posições e opções ficam em `%APPDATA%` e não se perdem. Versões beta não geram aviso. Para desligar o aviso: **Configurações → Geral → Avisar sobre atualizações**.
+
+### Onde ficam os arquivos
+
+Tudo em `%APPDATA%\DMT Overlay\` (**Configurações → Geral → Abrir pasta de configuração**):
+
+| Arquivo | O que é |
+|---|---|
+| `config.json` | Posições, widgets ligados, opções e atalhos |
+| `voltas\*.csv` | Voltas gravadas, um arquivo por sessão |
+| `dmt-overlay.log` | Log do app; anexe ao abrir uma issue de bug |
+
+## Roadmap
+
+O planejamento fica no [kanban público](https://github.com/users/Vinii225/projects/5): sprints de 2 semanas e uma release a cada 2 sprints. Ideias e bugs entram por [issues](https://github.com/Vinii225/dmt-overlay/issues/new/choose).
 
 ## Desenvolvimento
 
@@ -119,15 +137,36 @@ python scripts/build.py         # gera o .exe em dist/
 
 ```
 dmt_overlay/
-├── telemetria/   leitura do LMU (memória compartilhada) e fonte de demonstração
-├── calculos/     relativo, combustível e formatação
-├── widgets/      um arquivo por overlay, todos herdam de base.WidgetOverlay
-├── provedor.py   lê a fonte no ritmo configurado e distribui os quadros
-├── bandeja.py    menu do ícone na bandeja
-└── config.py     configuração em JSON
+├── telemetria/       leitura do LMU (memória compartilhada) e fonte de demonstração
+├── calculos/         relativo, combustível, estratégia, multiclasse, radar e formatação
+├── widgets/          um arquivo por overlay, todos herdam de base.WidgetOverlay
+├── app.py            liga tudo: widgets, bandeja, atalhos e janela de configurações
+├── provedor.py       lê a fonte no ritmo configurado e distribui os quadros
+├── bandeja.py        menu do ícone na bandeja (ações de sessão)
+├── configuracoes.py  janela de configurações, montada a partir dos metadados dos widgets
+├── atalhos.py        atalhos globais (RegisterHotKey no Windows)
+├── gravador.py       voltas em CSV
+├── layouts.py        layout por classe
+├── atualizacao.py    aviso de versão nova (API do GitHub)
+├── config.py         configuração em JSON
+└── tema.py           cores, fontes e cores das classes
 ```
 
-Para criar um widget novo, herde de `WidgetOverlay`, implemente `preparar` (extrai só os dados exibidos; o widget só redesenha quando eles mudam) e `desenhar`, e registre em `widgets/__init__.py`.
+### Criando um widget
+
+1. Herde de `WidgetOverlay` e implemente `preparar` (extrai só os dados exibidos; o widget só redesenha quando eles mudam) e `desenhar`.
+2. Preencha `descricao` e, para cada chave de `opcoes_padrao`, uma `Opcao` em `opcoes` com rótulo, ajuda, faixa e unidade. A janela de configurações se monta sozinha a partir disso, e um teste falha se faltar alguma.
+3. Se a altura depender das opções, sobrescreva `tamanho_base`; `reconfigurar()` é chamado quando o usuário muda algo.
+4. Registre em `widgets/__init__.py`.
+
+```python
+class Exemplo(WidgetOverlay):
+    nome = "exemplo"
+    titulo = "Exemplo"
+    descricao = "Uma linha explicando o que o widget mostra."
+    opcoes_padrao = {"alerta": 3.0}
+    opcoes = {"alerta": Opcao("Alerta", "Quando ficar vermelho.", 1, 10, 0.5, " voltas")}
+```
 
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) para o fluxo de branches e commits.
 
