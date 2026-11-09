@@ -20,6 +20,8 @@ PADRAO_GERAL: dict[str, Any] = {
     "verificar_atualizacoes": True,
     "atalhos": {"mostrar_ocultar": "Ctrl+Shift+H", "travar": "Ctrl+Shift+L"},
     "gravar_voltas": True,
+    "layout_por_classe": False,
+    "layouts": {},
 }
 
 
