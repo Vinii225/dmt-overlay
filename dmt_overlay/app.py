@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from collections.abc import Callable
 from logging.handlers import RotatingFileHandler
 
 from PySide6.QtCore import QLockFile
@@ -13,6 +14,7 @@ from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
 from .config import Config, pasta_config, pasta_voltas
+from .configuracoes import JanelaConfiguracoes
 from .gravador import GravadorVoltas
 from .provedor import Provedor, Quadro
 from .widgets import WIDGETS
@@ -39,6 +41,7 @@ class Aplicativo:
         self.provedor = Provedor(fonte, config.geral["taxa_atualizacao"])
         self.pilotando = False
         self.ocultos = False
+        self._ouvintes: list[Callable[[], None]] = []
         self.widgets: dict[str, WidgetOverlay] = {}
         for classe in WIDGETS:
             dados = config.widget(classe.nome, classe.padrao())
@@ -50,10 +53,10 @@ class Aplicativo:
         self.provedor.pilotando_mudou.connect(self._pilotando_mudou)
         self.atalhos = AtalhosGlobais()
         self.atalhos.acionado.connect(self._atalho)
-        for nome, sequencia in config.geral["atalhos"].items():
-            if sequencia:
-                self.atalhos.registrar(nome, sequencia)
+        self._registrar_atalhos()
         self.bandeja = Bandeja(self)
+        self.ao_mudar(self.bandeja.sincronizar)
+        self.janela_configuracoes: JanelaConfiguracoes | None = None
         self.verificador = VerificadorAtualizacao()
         self.verificador.encontrada.connect(self.bandeja.nova_versao)
         self.travar(config.geral["travado"])
@@ -71,6 +74,43 @@ class Aplicativo:
         self.atalhos.liberar()
         self.salvar()
         self.bandeja.hide()
+
+    def ao_mudar(self, ouvinte: Callable[[], None]) -> None:
+        self._ouvintes.append(ouvinte)
+
+    def notificar(self) -> None:
+        for ouvinte in self._ouvintes:
+            ouvinte()
+
+    def _registrar_atalhos(self) -> None:
+        self.atalhos.liberar()
+        for nome, sequencia in self.config.geral["atalhos"].items():
+            if sequencia:
+                self.atalhos.registrar(nome, sequencia)
+
+    def definir_atalho(self, nome: str, sequencia: str) -> bool:
+        """Troca um atalho; devolve False se não deu para registrar (inválido ou em uso)."""
+        atalhos = self.config.geral["atalhos"]
+        anterior = atalhos.get(nome, "")
+        atalhos[nome] = sequencia
+        self._registrar_atalhos()
+        ok = not sequencia or nome in self.atalhos.registrados or not self.atalhos.suportado
+        if not ok:
+            atalhos[nome] = anterior
+            self._registrar_atalhos()
+        self.salvar()
+        self.notificar()
+        return ok
+
+    def abrir_configuracoes(self, pagina: str = "") -> None:
+        if self.janela_configuracoes is None:
+            self.janela_configuracoes = JanelaConfiguracoes(self)
+        janela = self.janela_configuracoes
+        if pagina:
+            janela.mostrar_pagina(pagina)
+        janela.showNormal()
+        janela.raise_()
+        janela.activateWindow()
 
     def salvar(self) -> None:
         try:
@@ -103,6 +143,7 @@ class Aplicativo:
     def ocultar(self, ocultos: bool) -> None:
         self.ocultos = ocultos
         self.atualizar_visibilidade()
+        self.notificar()
 
     def travar(self, travado: bool) -> None:
         if not travado and self.ocultos:
@@ -114,11 +155,13 @@ class Aplicativo:
         self.atualizar_visibilidade()
         if travado:
             self.salvar()
+        self.notificar()
 
     def alternar_widget(self, nome: str, ativo: bool) -> None:
         self.widgets[nome].config["ativo"] = ativo
         self.atualizar_visibilidade()
         self.salvar()
+        self.notificar()
 
     def definir_escala(self, escala: float) -> None:
         self.config.geral["escala"] = escala
@@ -127,32 +170,57 @@ class Aplicativo:
             widget.ajustar_tamanho()
             widget.update()
         self.salvar()
+        self.notificar()
 
     def definir_opacidade(self, opacidade: float) -> None:
         self.config.geral["opacidade"] = opacidade
         for widget in self.widgets.values():
             widget.setWindowOpacity(opacidade)
         self.salvar()
+        self.notificar()
 
     def definir_ocultar(self, ocultar: bool) -> None:
         self.config.geral["ocultar_fora_da_pista"] = ocultar
         self.atualizar_visibilidade()
         self.salvar()
+        self.notificar()
 
     def definir_verificar_atualizacoes(self, ativo: bool) -> None:
         self.config.geral["verificar_atualizacoes"] = ativo
         self.salvar()
+        self.notificar()
 
     def definir_gravar_voltas(self, ativo: bool, salvar: bool = True) -> None:
         self.config.geral["gravar_voltas"] = ativo
         self.provedor.gravador = GravadorVoltas(pasta_voltas()) if ativo else None
         if salvar:
             self.salvar()
+        self.notificar()
+
+    def definir_taxa(self, taxa: int) -> None:
+        self.config.geral["taxa_atualizacao"] = taxa
+        self.provedor.definir_taxa(taxa)
+        self.salvar()
+        self.notificar()
+
+    def definir_opcao(self, widget: str, chave: str, valor) -> None:
+        alvo = self.widgets[widget]
+        alvo.config[chave] = valor
+        alvo.reconfigurar()
+        self.salvar()
+
+    def restaurar_opcoes(self, widget: str) -> None:
+        alvo = self.widgets[widget]
+        alvo.config.update(type(alvo).opcoes_padrao)
+        alvo.reconfigurar()
+        self.salvar()
+        self.notificar()
 
     def trocar_fonte(self, chave: str) -> None:
         self.provedor.trocar_fonte(chave)
         self.config.geral["fonte_dados"] = chave
         self.salvar()
+        self.notificar()
 
     def restaurar_posicoes(self) -> None:
         for widget in self.widgets.values():
@@ -160,6 +228,7 @@ class Aplicativo:
             widget.config["x"], widget.config["y"] = x, y
             widget.move(x, y)
         self.salvar()
+        self.notificar()
 
 
 def main() -> None:

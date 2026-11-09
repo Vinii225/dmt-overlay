@@ -10,6 +10,7 @@ from .base import CENTRO, WidgetOverlay, rotulo, texto
 class Eletronica(WidgetOverlay):
     nome = "eletronica"
     titulo = "Eletrônica"
+    descricao = "Balanço de freio, TC, ABS e mapa de motor."
     largura = 250
     altura = 40
     posicao_padrao = (835, 1000)

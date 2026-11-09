@@ -11,6 +11,7 @@ from .base import DIR, WidgetOverlay, rotulo, texto
 class Stint(WidgetOverlay):
     nome = "stint"
     titulo = "Stint e estratégia"
+    descricao = "Tempo e voltas do stint, janela de box, paradas restantes e quanto abastecer."
     largura = 230
     altura = 104
     posicao_padrao = (1640, 470)

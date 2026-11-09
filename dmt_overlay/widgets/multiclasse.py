@@ -6,7 +6,7 @@ from PySide6.QtGui import QPainter
 from .. import tema
 from ..calculos.formatacao import nome_curto
 from ..calculos.multiclasse import alerta_multiclasse
-from .base import DIR, WidgetOverlay, rotulo, selo_classe, texto
+from .base import DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
 
 ALTURA_LINHA = 30
 
@@ -18,6 +18,11 @@ class Multiclasse(WidgetOverlay):
     altura = 8 + ALTURA_LINHA * 2
     posicao_padrao = (835, 220)
     opcoes_padrao = {"janela_atras": 3.0, "janela_frente": 2.5}
+    descricao = "Aparece só quando precisa: carro mais rápido chegando ou tráfego mais lento à frente."
+    opcoes = {
+        "janela_atras": Opcao("Avisar carro chegando", "Carro mais rápido a menos disso atrás.", 1, 10, 0.5, " s"),
+        "janela_frente": Opcao("Avisar tráfego à frente", "Carro mais lento a menos disso à frente.", 1, 10, 0.5, " s"),
+    }
 
     def tamanho_base(self) -> QSize:
         linhas = len(self._dados) if self._dados else 2

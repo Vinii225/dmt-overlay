@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, ClassVar
 
 from PySide6.QtCore import QPoint, QRectF, QSize, Qt
@@ -14,6 +15,21 @@ DIR = Qt.AlignmentFlag.AlignRight
 CENTRO = Qt.AlignmentFlag.AlignHCenter
 
 
+@dataclass(frozen=True, slots=True)
+class Opcao:
+    """Como uma opção do widget aparece na tela de configurações."""
+
+    rotulo: str
+    ajuda: str = ""
+    minimo: float = 0
+    maximo: float = 100
+    passo: float = 1
+    sufixo: str = ""
+    # Valor exibido = valor salvo * fator (ex.: 0.94 aparece como 94%).
+    fator: float = 1
+    escolhas: tuple[tuple[str, str], ...] = ()
+
+
 class WidgetOverlay(QWidget):
     nome: ClassVar[str] = ""
     titulo: ClassVar[str] = ""
@@ -22,6 +38,8 @@ class WidgetOverlay(QWidget):
     posicao_padrao: ClassVar[tuple[int, int]] = (100, 100)
     ativo_padrao: ClassVar[bool] = True
     opcoes_padrao: ClassVar[dict[str, Any]] = {}
+    opcoes: ClassVar[dict[str, Opcao]] = {}
+    descricao: ClassVar[str] = ""
 
     def __init__(self, config: dict[str, Any], escala: float = 1.0) -> None:
         super().__init__(None)
@@ -71,6 +89,12 @@ class WidgetOverlay(QWidget):
         self._travado = travado
         self.setCursor(Qt.CursorShape.ArrowCursor if travado else Qt.CursorShape.SizeAllCursor)
         self._aplicar_flags()
+        self.update()
+
+    def reconfigurar(self) -> None:
+        """Chamado quando uma opção muda: redesenha com o próximo quadro."""
+        self._dados = None
+        self.ajustar_tamanho()
         self.update()
 
     def preparar(self, quadro: Quadro) -> Any:

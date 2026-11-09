@@ -4,7 +4,7 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from .base import CENTRO, DIR, WidgetOverlay, rotulo, texto
+from .base import CENTRO, DIR, Opcao, WidgetOverlay, rotulo, texto
 
 POSICOES = ("DE", "DD", "TE", "TD")
 
@@ -16,6 +16,12 @@ class Pneus(WidgetOverlay):
     altura = 150
     posicao_padrao = (1640, 590)
     opcoes_padrao = {"unidade_pressao": "kpa", "faixa_temperatura": 15.0, "freio_ideal": 500.0}
+    descricao = "Temperatura por faixa, pressão, desgaste e temperatura do freio."
+    opcoes = {
+        "unidade_pressao": Opcao("Pressão em", escolhas=(("kpa", "kPa"), ("psi", "psi"))),
+        "faixa_temperatura": Opcao("Tolerância de temperatura", "Desvio do ideal até a cor ficar cheia.", 5, 30, 1, " °C"),
+        "freio_ideal": Opcao("Freio ideal", "Temperatura de trabalho do freio; varia por carro.", 200, 900, 25, " °C"),
+    }
 
     def preparar(self, quadro):
         j = quadro.estado.jogador

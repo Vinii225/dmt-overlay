@@ -5,7 +5,7 @@ from PySide6.QtGui import QPainter, QPen
 
 from .. import tema
 from ..calculos.radar import COMPRIMENTO_CARRO, LARGURA_CARRO, calcular_vizinhos
-from .base import WidgetOverlay
+from .base import Opcao, WidgetOverlay
 
 
 class Radar(WidgetOverlay):
@@ -15,6 +15,11 @@ class Radar(WidgetOverlay):
     altura = 170
     posicao_padrao = (875, 640)
     opcoes_padrao = {"alcance": 15.0, "inverter_lados": False}
+    descricao = "Aparece só com carro por perto e acende a lateral quando há alguém lado a lado."
+    opcoes = {
+        "alcance": Opcao("Alcance", "Distância em que os carros aparecem no radar.", 8, 30, 1, " m"),
+        "inverter_lados": Opcao("Inverter esquerda e direita", "Use se o radar mostrar os carros do lado errado."),
+    }
 
     def preparar(self, quadro):
         vizinhos = calcular_vizinhos(quadro.estado, self.config["alcance"], self.config["inverter_lados"])

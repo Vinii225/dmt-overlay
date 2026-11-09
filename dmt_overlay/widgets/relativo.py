@@ -6,7 +6,7 @@ from PySide6.QtGui import QPainter
 from .. import tema
 from ..calculos.formatacao import nome_curto, numero_carro
 from ..calculos.relativo import calcular_relativo
-from .base import CENTRO, DIR, WidgetOverlay, selo_classe, texto
+from .base import CENTRO, DIR, Opcao, WidgetOverlay, selo_classe, texto
 
 ALTURA_LINHA = 22
 
@@ -17,6 +17,10 @@ class Relativo(WidgetOverlay):
     largura = 300
     posicao_padrao = (40, 640)
     opcoes_padrao = {"carros_cada_lado": 3}
+    descricao = "Carros à frente e atrás de você na pista, com a diferença em segundos."
+    opcoes = {
+        "carros_cada_lado": Opcao("Carros de cada lado", "Quantos carros mostrar à frente e atrás.", 1, 6, 1),
+    }
 
     def tamanho_base(self) -> QSize:
         linhas = self.config["carros_cada_lado"] * 2 + 1
