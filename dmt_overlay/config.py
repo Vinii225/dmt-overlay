@@ -19,6 +19,7 @@ PADRAO_GERAL: dict[str, Any] = {
     "opacidade": 1.0,
     "verificar_atualizacoes": True,
     "atalhos": {"mostrar_ocultar": "Ctrl+Shift+H", "travar": "Ctrl+Shift+L"},
+    "gravar_voltas": True,
 }
 
 
@@ -28,6 +29,10 @@ def pasta_config() -> Path:
         return base / "DMT Overlay"
     base = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
     return base / "dmt-overlay"
+
+
+def pasta_voltas() -> Path:
+    return pasta_config() / "voltas"
 
 
 def mesclar(padrao: dict, atual: dict) -> dict:

@@ -12,7 +12,8 @@ from . import __version__
 from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
-from .config import Config, pasta_config
+from .config import Config, pasta_config, pasta_voltas
+from .gravador import GravadorVoltas
 from .provedor import Provedor, Quadro
 from .widgets import WIDGETS
 from .widgets.base import WidgetOverlay
@@ -44,6 +45,7 @@ class Aplicativo:
             widget = classe(dados, config.geral["escala"])
             widget.setWindowOpacity(config.geral["opacidade"])
             self.widgets[classe.nome] = widget
+        self.definir_gravar_voltas(config.geral["gravar_voltas"], salvar=False)
         self.provedor.novo_quadro.connect(self._novo_quadro)
         self.provedor.pilotando_mudou.connect(self._pilotando_mudou)
         self.atalhos = AtalhosGlobais()
@@ -140,6 +142,12 @@ class Aplicativo:
     def definir_verificar_atualizacoes(self, ativo: bool) -> None:
         self.config.geral["verificar_atualizacoes"] = ativo
         self.salvar()
+
+    def definir_gravar_voltas(self, ativo: bool, salvar: bool = True) -> None:
+        self.config.geral["gravar_voltas"] = ativo
+        self.provedor.gravador = GravadorVoltas(pasta_voltas()) if ativo else None
+        if salvar:
+            self.salvar()
 
     def trocar_fonte(self, chave: str) -> None:
         self.provedor.trocar_fonte(chave)

@@ -7,6 +7,7 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 ### Novidades
 
 - Atalhos globais: `Ctrl+Shift+H` esconde/mostra os overlays e `Ctrl+Shift+L` trava/destrava, com o jogo em foco. Configuráveis no `config.json`.
+- Gravação das voltas em CSV (uma linha por volta, um arquivo por sessão) com tempo, stint, consumo, pneus e condições, para análise pós-corrida.
 
 ## [0.2.0] - 2026-11-09
 

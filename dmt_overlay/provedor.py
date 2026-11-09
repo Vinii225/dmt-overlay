@@ -8,6 +8,7 @@ from PySide6.QtCore import QObject, QTimer, Signal
 
 from .calculos.combustivel import CalculadoraCombustivel, ResumoCombustivel
 from .calculos.estrategia import CalculadoraEstrategia, ResumoEstrategia
+from .gravador import GravadorVoltas
 from .telemetria.demo import FonteDemo
 from .telemetria.lmu import FonteLMU
 from .telemetria.modelos import Estado
@@ -39,6 +40,7 @@ class Provedor(QObject):
         self._conectado = False
         self._pilotando = False
         self._identidade_sessao: tuple | None = None
+        self.gravador: GravadorVoltas | None = None
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._tick)
         self.definir_taxa(taxa)
@@ -78,6 +80,8 @@ class Provedor(QObject):
         if estado.pilotando:
             resumo = self._combustivel.atualizar(estado)
             estrategia = self._estrategia.atualizar(estado, resumo)
+            if self.gravador is not None and self._chave_fonte == "lmu":
+                self.gravador.atualizar(estado)
         else:
             resumo = ResumoCombustivel()
             estrategia = ResumoEstrategia()
@@ -96,3 +100,5 @@ class Provedor(QObject):
             self._identidade_sessao = identidade
             self._combustivel.reiniciar()
             self._estrategia.reiniciar()
+            if self.gravador is not None:
+                self.gravador.nova_sessao()
