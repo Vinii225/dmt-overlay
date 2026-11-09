@@ -6,7 +6,7 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ### Novidades
 
-- Atalhos globais: `Ctrl+Shift+H` esconde/mostra os overlays e `Ctrl+Shift+L` trava/destrava, com o jogo em foco. Configuráveis no `config.json`.
+- Atalhos globais: `Ctrl+Shift+H` esconde/mostra os overlays e `Ctrl+Shift+L` trava/destrava, com o jogo em foco. Configuráveis em **Configurações → Atalhos**.
 - Gravação das voltas em CSV (uma linha por volta, um arquivo por sessão) com tempo, stint, consumo, pneus e condições, para análise pós-corrida.
 - Janela de configurações: opções gerais, aparência, atalhos e uma página por widget, sem editar o `config.json`.
 - Layout separado por classe: posições e widgets ligados de cada classe, trocando sozinho ao mudar de carro (desligado por padrão).
