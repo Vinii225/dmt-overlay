@@ -12,6 +12,7 @@ from .base import DIR, WidgetOverlay, rotulo, texto
 class Sessao(WidgetOverlay):
     nome = "sessao"
     titulo = "Sessão"
+    descricao = "Tipo de sessão, tempo ou voltas restantes, posição, hora na pista, temperatura e chuva."
     largura = 360
     altura = 40
     posicao_padrao = (780, 20)

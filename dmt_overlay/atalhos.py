@@ -16,6 +16,9 @@ TECLAS_ESPECIAIS = {
     "insert": (0x2D, "Insert"), "delete": (0x2E, "Delete"), "home": (0x24, "Home"), "end": (0x23, "End"),
     "pgup": (0x21, "PgUp"), "pgdown": (0x22, "PgDown"), "pause": (0x13, "Pause"), "space": (0x20, "Space"),
 }
+# Nomes que o QKeySequence usa.
+TECLAS_ESPECIAIS |= {"ins": TECLAS_ESPECIAIS["insert"], "del": TECLAS_ESPECIAIS["delete"]}
+MODIFICADORES_ALIAS = {"meta": "win", "control": "ctrl"}
 
 
 def interpretar(sequencia: str) -> tuple[int, int, str] | None:
@@ -24,6 +27,7 @@ def interpretar(sequencia: str) -> tuple[int, int, str] | None:
     if len(partes) < 2:
         return None
     *mods, tecla = partes
+    mods = [MODIFICADORES_ALIAS.get(m, m) for m in mods]
     if any(m not in MODIFICADORES for m in mods) or len(set(mods)) != len(mods):
         return None
     if len(tecla) == 1 and tecla.isascii() and tecla.isalnum():
@@ -68,7 +72,8 @@ class AtalhosGlobais(QObject):
         self._ids: dict[int, str] = {}
         self.registrados: dict[str, str] = {}
         self._filtro: _FiltroWindows | None = None
-        if sys.platform == "win32":
+        self.suportado = sys.platform == "win32"
+        if self.suportado:
             self._filtro = _FiltroWindows(self._recebido)
             QCoreApplication.instance().installNativeEventFilter(self._filtro)
 

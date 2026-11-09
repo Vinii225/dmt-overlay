@@ -4,7 +4,7 @@ from PySide6.QtCore import QRectF
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from .base import DIR, WidgetOverlay, barra, rotulo, texto
+from .base import DIR, Opcao, WidgetOverlay, barra, rotulo, texto
 
 
 class Combustivel(WidgetOverlay):
@@ -14,6 +14,10 @@ class Combustivel(WidgetOverlay):
     altura = 118
     posicao_padrao = (1640, 760)
     opcoes_padrao = {"voltas_alerta": 3.0}
+    descricao = "Voltas restantes com combustível e energia virtual, média por volta e quanto abastecer."
+    opcoes = {
+        "voltas_alerta": Opcao("Alerta de voltas", "Vermelho abaixo disso, amarelo abaixo do dobro.", 1, 10, 0.5, " voltas"),
+    }
 
     def preparar(self, quadro):
         c = quadro.combustivel

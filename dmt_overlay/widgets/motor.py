@@ -4,7 +4,7 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from .base import CENTRO, DIR, WidgetOverlay, rotulo, texto
+from .base import CENTRO, DIR, Opcao, WidgetOverlay, rotulo, texto
 
 
 def nome_marcha(marcha: int) -> str:
@@ -22,6 +22,11 @@ class Motor(WidgetOverlay):
     altura = 64
     posicao_padrao = (835, 900)
     opcoes_padrao = {"unidade_velocidade": "kmh", "luz_troca": 0.94}
+    descricao = "Marcha, velocidade, RPM e luzes de troca."
+    opcoes = {
+        "unidade_velocidade": Opcao("Velocidade em", escolhas=(("kmh", "km/h"), ("mph", "mph"))),
+        "luz_troca": Opcao("Luz de troca", "Porcentagem do RPM máximo em que as luzes piscam.", 80, 99, 1, "%", fator=100),
+    }
 
     def preparar(self, quadro):
         j = quadro.estado.jogador

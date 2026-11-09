@@ -4,7 +4,7 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from .base import CENTRO, WidgetOverlay, barra, rotulo, texto
+from .base import CENTRO, Opcao, WidgetOverlay, barra, rotulo, texto
 
 
 class Pedais(WidgetOverlay):
@@ -14,6 +14,11 @@ class Pedais(WidgetOverlay):
     altura = 128
     posicao_padrao = (1180, 880)
     opcoes_padrao = {"mostrar_embreagem": True, "mostrar_volante": True}
+    descricao = "Acelerador, freio, embreagem e volante, com TC e ABS atuando."
+    opcoes = {
+        "mostrar_embreagem": Opcao("Mostrar embreagem"),
+        "mostrar_volante": Opcao("Mostrar volante"),
+    }
 
     def preparar(self, quadro):
         j = quadro.estado.jogador

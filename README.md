@@ -50,16 +50,22 @@
 
 ## Uso
 
-Clique com o botão direito no ícone da bandeja:
+Clique com o botão direito no ícone da bandeja. O menu tem só o que se usa durante a sessão:
 
 - **Travar posições**: destrave para arrastar os widgets (eles encaixam nas bordas da tela) e trave de novo para o clique passar para o jogo. Atalho: duplo clique no ícone.
 - **Esconder overlays**: some com todos os widgets na hora, sem desligar nenhum.
 - **Widgets**: liga e desliga cada um.
+- **Abrir voltas gravadas**: abre a pasta dos CSV (veja abaixo).
+- **Configurações…**: abre a janela com todo o resto.
+
+### Configurações
+
+Tudo vale na hora e é salvo sozinho, sem botão de salvar.
+
+- **Geral**: travar e restaurar posições, esconder fora da pista, fonte de dados (**Demonstração** simula dados para posicionar tudo sem abrir o jogo), taxa de atualização, gravação das voltas e aviso de atualização.
 - **Aparência**: tamanho (80% a 150%) e opacidade.
-- **Esconder fora da pista**: some com os overlays no menu e na garagem.
-- **Fonte de dados → Demonstração**: dados simulados para posicionar tudo sem abrir o jogo.
-- **Gravar voltas em CSV**: salva cada volta para análise depois da corrida (veja abaixo). **Abrir voltas gravadas** abre a pasta.
-- **Avisar sobre atualizações**: ao abrir, o app confere se saiu versão nova e mostra um aviso com o link para baixar.
+- **Atalhos**: clique no campo e aperte a combinação nova.
+- **Uma página por widget**: liga e desliga, além das opções dele (unidade de pressão e velocidade, carros no relativo, luz de troca, alcance do radar, temperatura ideal do freio, etc.) com **Restaurar padrão**.
 
 ### Atalhos de teclado
 
@@ -70,7 +76,7 @@ Funcionam com o jogo em foco, sem precisar tirar a mão do volante por muito tem
 | `Ctrl+Shift+H` | Esconder / mostrar todos os overlays |
 | `Ctrl+Shift+L` | Travar / destravar posições |
 
-Para trocar, edite `geral.atalhos` no `config.json` com o app fechado (ex.: `"travar": "Ctrl+Alt+F9"`; deixe `""` para desligar). Valem `Ctrl`, `Shift`, `Alt` e `Win` com uma letra, número, `F1`–`F24`, `Insert`, `Delete`, `Home`, `End`, `PgUp`, `PgDown`, `Pause` ou `Space`. Se outro programa já usa a combinação, ela fica de fora e o menu não mostra o atalho.
+Para trocar, use **Configurações → Atalhos** (ou **Limpar** para desligar). Valem `Ctrl`, `Shift`, `Alt` e `Win` com uma letra, número, `F1`–`F24`, `Insert`, `Delete`, `Home`, `End`, `PgUp`, `PgDown`, `Pause` ou `Space`. Se outro programa já usa a combinação, a janela avisa e mantém o atalho anterior.
 
 ### Voltas gravadas
 
@@ -85,7 +91,7 @@ Cada linha traz:
 
 Um stint novo começa quando há serviço no box (abastecimento ou troca de pneu); passar pelo pit lane sem parar não conta. Na volta em que houve serviço, consumo e desgaste ficam em branco porque não dá para medir. A primeira volta depois de abrir o app também fica de fora, porque começou pela metade.
 
-Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`. Opções extras de cada widget (unidade de pressão em psi, km/h ou mph, número de carros no relativo, etc.) podem ser editadas nesse arquivo com o app fechado.
+Posições e opções ficam salvas em `%APPDATA%\DMT Overlay\config.json`.
 
 ## Desenvolvimento
 

@@ -6,20 +6,15 @@ import sys
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QUrl
-from PySide6.QtGui import QAction, QActionGroup, QDesktopServices
+from PySide6.QtGui import QAction, QDesktopServices
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from . import __version__
-from .config import pasta_config, pasta_voltas
+from .config import pasta_voltas
 from .icone import icone
 
 if TYPE_CHECKING:
     from .app import Aplicativo
-
-ESCALAS = (0.8, 0.9, 1.0, 1.1, 1.25, 1.5)
-OPACIDADES = (0.6, 0.7, 0.8, 0.9, 1.0)
-FONTES = (("lmu", "Le Mans Ultimate"), ("demo", "Demonstração"))
-
 
 def abrir_pasta(caminho) -> None:
     caminho.mkdir(parents=True, exist_ok=True)
@@ -54,65 +49,54 @@ class Bandeja(QSystemTrayIcon):
         self.acao_atualizar.triggered.connect(self._abrir_atualizacao)
         self.menu.addSeparator()
 
-        self.acao_travar = self.menu.addAction(self._com_atalho("Travar posições", "travar"))
+        # Só o que se usa durante a sessão; o resto fica na janela de configurações.
+        self.acao_travar = self.menu.addAction("")
         self.acao_travar.setCheckable(True)
         self.acao_travar.setChecked(geral["travado"])
         self.acao_travar.toggled.connect(app.travar)
 
-        self.acao_ocultar = self.menu.addAction(self._com_atalho("Esconder overlays", "mostrar_ocultar"))
+        self.acao_ocultar = self.menu.addAction("")
         self.acao_ocultar.setCheckable(True)
         self.acao_ocultar.toggled.connect(app.ocultar)
 
         widgets = self.menu.addMenu("Widgets")
+        self.acoes_widgets: dict[str, QAction] = {}
         for nome, widget in app.widgets.items():
             acao = widgets.addAction(widget.titulo)
             acao.setCheckable(True)
             acao.setChecked(widget.config["ativo"])
             acao.toggled.connect(lambda ativo, n=nome: app.alternar_widget(n, ativo))
+            self.acoes_widgets[nome] = acao
 
-        aparencia = self.menu.addMenu("Aparência")
-        self._grupo(aparencia.addMenu("Tamanho"), ESCALAS, geral["escala"], app.definir_escala)
-        self._grupo(aparencia.addMenu("Opacidade"), OPACIDADES, geral["opacidade"], app.definir_opacidade)
-
-        ocultar = self.menu.addAction("Esconder fora da pista")
-        ocultar.setCheckable(True)
-        ocultar.setChecked(geral["ocultar_fora_da_pista"])
-        ocultar.toggled.connect(app.definir_ocultar)
-
-        fontes = self.menu.addMenu("Fonte de dados")
-        grupo = QActionGroup(fontes)
-        for chave, nome in FONTES:
-            acao = QAction(nome, grupo, checkable=True, checked=chave == app.provedor.fonte)
-            acao.triggered.connect(lambda _=False, c=chave: app.trocar_fonte(c))
-            fontes.addAction(acao)
-
-        gravar = self.menu.addAction("Gravar voltas em CSV")
-        gravar.setCheckable(True)
-        gravar.setChecked(geral["gravar_voltas"])
-        gravar.toggled.connect(app.definir_gravar_voltas)
         self.menu.addAction("Abrir voltas gravadas").triggered.connect(lambda: abrir_pasta(pasta_voltas()))
-
         self.menu.addSeparator()
-        self.menu.addAction("Restaurar posições").triggered.connect(app.restaurar_posicoes)
-        self.menu.addAction("Abrir pasta de configuração").triggered.connect(lambda: abrir_pasta(pasta_config()))
-        verificar = self.menu.addAction("Avisar sobre atualizações")
-        verificar.setCheckable(True)
-        verificar.setChecked(geral["verificar_atualizacoes"])
-        verificar.toggled.connect(app.definir_verificar_atualizacoes)
-        self.menu.addSeparator()
+        configuracoes = self.menu.addAction("Configurações…")
+        configuracoes.triggered.connect(app.abrir_configuracoes)
+        fonte = configuracoes.font()
+        fonte.setBold(True)
+        configuracoes.setFont(fonte)
         self.menu.addAction("Sair").triggered.connect(QApplication.quit)
+        self._textos_atalhos()
+
+    def _textos_atalhos(self) -> None:
+        self.acao_travar.setText(self._com_atalho("Travar posições", "travar"))
+        self.acao_ocultar.setText(self._com_atalho("Esconder overlays", "mostrar_ocultar"))
+
+    def sincronizar(self) -> None:
+        """Reflete no menu o que mudou por fora (janela de configurações, atalhos)."""
+        app = self.aplicativo
+        marcados = [(self.acao_travar, app.config.geral["travado"]), (self.acao_ocultar, app.ocultos)]
+        marcados += [(acao, app.widgets[nome].config["ativo"]) for nome, acao in self.acoes_widgets.items()]
+        for acao, valor in marcados:
+            if acao.isChecked() != valor:
+                acao.blockSignals(True)
+                acao.setChecked(valor)
+                acao.blockSignals(False)
+        self._textos_atalhos()
 
     def _com_atalho(self, texto: str, nome: str) -> str:
         atalho = self.aplicativo.atalhos.registrados.get(nome)
         return f"{texto}\t{atalho}" if atalho else texto
-
-    @staticmethod
-    def _grupo(menu: QMenu, valores, atual: float, callback) -> None:
-        grupo = QActionGroup(menu)
-        for valor in valores:
-            acao = QAction(f"{valor * 100:.0f}%", grupo, checkable=True, checked=abs(valor - atual) < 1e-6)
-            acao.triggered.connect(lambda _=False, v=valor: callback(v))
-            menu.addAction(acao)
 
     def _ativado(self, motivo) -> None:
         if motivo == QSystemTrayIcon.ActivationReason.DoubleClick:

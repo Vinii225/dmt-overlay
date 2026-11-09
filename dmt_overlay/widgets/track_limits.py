@@ -12,6 +12,7 @@ from .base import DIR, WidgetOverlay, rotulo, texto
 class TrackLimits(WidgetOverlay):
     nome = "track_limits"
     titulo = "Track limits"
+    descricao = "Pontos de track limits acumulados e quanto falta para a punição."
     largura = 120
     altura = 70
     posicao_padrao = (1095, 140)

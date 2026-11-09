@@ -5,7 +5,7 @@ from PySide6.QtGui import QPainter
 
 from .. import tema
 from ..calculos.formatacao import intervalo, nome_curto, numero_carro, tempo_volta
-from .base import DIR, WidgetOverlay, rotulo, selo_classe, texto
+from .base import DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
 
 ALTURA_LINHA = 21
 CABECALHO = 22
@@ -28,10 +28,20 @@ class Classificacao(WidgetOverlay):
     largura = 340
     posicao_padrao = (40, 120)
     opcoes_padrao = {"linhas": 10, "lideres": 3, "somente_minha_classe": True}
+    descricao = "Classificação da sua classe: líderes e quem está perto de você."
+    opcoes = {
+        "linhas": Opcao("Linhas", "Total de carros na lista.", 5, 25, 1),
+        "lideres": Opcao("Líderes sempre visíveis", "Quantos do topo aparecem mesmo quando você está longe deles.", 0, 5, 1),
+        "somente_minha_classe": Opcao("Só a minha classe", "Desligado mostra a classificação geral."),
+    }
 
     def __init__(self, *args, **kwargs) -> None:
         self._quantidade = 0
         super().__init__(*args, **kwargs)
+
+    def reconfigurar(self) -> None:
+        self._quantidade = 0
+        super().reconfigurar()
 
     def tamanho_base(self) -> QSize:
         linhas = self._quantidade or self.config["linhas"]

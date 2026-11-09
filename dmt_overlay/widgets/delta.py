@@ -5,7 +5,7 @@ from PySide6.QtGui import QPainter
 
 from .. import tema
 from ..calculos.formatacao import tempo_volta
-from .base import DIR, WidgetOverlay, rotulo, texto
+from .base import DIR, Opcao, WidgetOverlay, rotulo, texto
 
 
 class Delta(WidgetOverlay):
@@ -15,6 +15,10 @@ class Delta(WidgetOverlay):
     altura = 70
     posicao_padrao = (835, 140)
     opcoes_padrao = {"limite": 2.0}
+    descricao = "Delta para a sua melhor volta e os tempos da volta atual, última e melhor."
+    opcoes = {
+        "limite": Opcao("Escala da barra", "Diferença que enche a barra de delta.", 0.5, 5, 0.5, " s"),
+    }
 
     def preparar(self, quadro):
         e = quadro.estado
