@@ -4,6 +4,18 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+## [0.2.0] - 2026-11-09
+
+Versão estável da 0.2.0, testada em pista a partir da beta.
+
+### Novidades
+
+- Widget de track limits com barra até a punição.
+- Alerta multiclasse: carro mais rápido chegando e tráfego mais lento à frente.
+- Widget de stint e estratégia: janela de box, paradas restantes e quanto abastecer.
+- Radar de proximidade com alerta de carro lado a lado.
+- Aviso na bandeja quando sai versão nova (pode ser desligado no menu).
+
 ## [0.2.0-beta.1] - 2026-10-30
 
 Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a janela de box em corrida longa.
@@ -26,6 +38,7 @@ Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a 
 - Modo demonstração para posicionar os widgets sem o jogo aberto.
 - Configuração salva em `%APPDATA%\DMT Overlay`.
 
-[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0-beta.1...HEAD
+[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0
 [0.2.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0-beta.1
 [0.1.0]: https://github.com/Vinii225/dmt-overlay/releases/tag/v0.1.0
