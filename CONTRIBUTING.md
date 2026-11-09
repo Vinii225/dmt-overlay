@@ -37,6 +37,16 @@ Use `!` para mudanças que quebram a configuração existente: `feat(config)!: r
 
 Referencie a issue no corpo do commit ou do PR: `Closes #12`.
 
+## Planejamento
+
+O roadmap fica no [kanban do projeto](https://github.com/users/Vinii225/projects/5).
+
+- Sprints de 2 semanas, começando na segunda-feira.
+- Cada milestone é uma versão e dura 2 sprints. Feature pronta entra na `main` e espera o fim do ciclo, sem release avulsa por feature.
+- Beta só no meio do ciclo, quando algo precisa ser testado em pista pela equipe.
+- Correção urgente que atrapalha corrida (P0) pode sair como patch a qualquer momento.
+- Depois do merge, o card vai para **Testar em pista**. Só passa para **Concluído** depois de conferido no LMU, porque o CI não roda o jogo.
+
 ## Release
 
 1. Atualize `__version__` em `dmt_overlay/__init__.py` seguindo o semver:
