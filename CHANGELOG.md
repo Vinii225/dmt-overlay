@@ -4,6 +4,10 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+## [0.3.0-beta.3] - 2026-11-16
+
+Ajustes da beta.2. Para testar: confira o visual novo (é o único agora), ligue **Volante e inputs** e **Rivais** e, na pista, passe perto de outra classe para ver a bandeira azul e o aviso de tráfego.
+
 ### Mudanças
 
 - O visual de transmissão virou o único: o tema antigo e a escolha de tema saíram.
@@ -85,7 +89,8 @@ Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a 
 - Modo demonstração para posicionar os widgets sem o jogo aberto.
 - Configuração salva em `%APPDATA%\DMT Overlay`.
 
-[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.2...HEAD
+[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.3...HEAD
+[0.3.0-beta.3]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.2...v0.3.0-beta.3
 [0.3.0-beta.2]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0...v0.3.0-beta.2
 [0.2.0]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0
 [0.2.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0-beta.1
