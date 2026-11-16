@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (  # noqa: E402
     QDoubleSpinBox,
     QKeySequenceEdit,
     QLabel,
+    QPushButton,
     QSpinBox,
 )
 
@@ -104,3 +105,29 @@ def test_atalho_sem_modificador_e_recusado(aplicativo):
     assert editor.keySequence().toString() == "Ctrl+Shift+L"
     erros = [r.text() for r in pagina_atalhos.findChildren(QLabel) if r.objectName() == "erro"]
     assert any("inválida" in texto for texto in erros)
+
+
+def test_tema_troca_ao_vivo(aplicativo):
+    from dmt_overlay import tema
+
+    aplicativo.abrir_configuracoes()
+    combo = [c for c in pagina(aplicativo.janela_configuracoes, "Aparência").findChildren(QComboBox)][0]
+    try:
+        combo.setCurrentIndex(combo.findData("transmissao"))
+        assert aplicativo.config.geral["tema"] == "transmissao"
+        assert tema.MAIUSCULAS and tema.FAMILIAS[0] == "Barlow Condensed"
+        assert all(not w.grab().isNull() for w in aplicativo.widgets.values())
+    finally:
+        tema.aplicar("padrao")
+
+
+def test_hud_liga_e_desliga_pela_janela(aplicativo):
+    aplicativo.config.geral["hud"]["porta"] = 0
+    aplicativo.abrir_configuracoes()
+    transmissao = pagina(aplicativo.janela_configuracoes, "Transmissão")
+    ligar = transmissao.findChildren(QCheckBox)[0]
+    ligar.setChecked(True)
+    assert aplicativo.hud.rodando
+    assert any(b.isEnabled() and b.text() == "Copiar endereço" for b in transmissao.findChildren(QPushButton))
+    ligar.setChecked(False)
+    assert not aplicativo.hud.rodando

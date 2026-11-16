@@ -9,13 +9,14 @@ from logging.handlers import RotatingFileHandler
 from PySide6.QtCore import QLockFile
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from . import __version__
+from . import __version__, tema
 from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
 from .config import Config, pasta_config, pasta_voltas
 from .configuracoes import JanelaConfiguracoes
 from .gravador import GravadorVoltas
+from .hud import ServidorHUD, ip_local
 from .layouts import aplicar, capturar, chave_classe
 from .provedor import Provedor, Quadro
 from .widgets import WIDGETS
@@ -45,6 +46,7 @@ class Aplicativo:
         self.classe = ""
         self.nome_classe = ""
         self._ouvintes: list[Callable[[], None]] = []
+        tema.aplicar(config.geral["tema"])
         self.widgets: dict[str, WidgetOverlay] = {}
         for classe in WIDGETS:
             dados = config.widget(classe.nome, classe.padrao())
@@ -54,6 +56,9 @@ class Aplicativo:
         self.definir_gravar_voltas(config.geral["gravar_voltas"], salvar=False)
         self.provedor.novo_quadro.connect(self._novo_quadro)
         self.provedor.pilotando_mudou.connect(self._pilotando_mudou)
+        self.hud = ServidorHUD()
+        if config.geral["hud"]["ativo"]:
+            self.hud.iniciar(config.geral["hud"]["porta"], config.geral["hud"]["rede"])
         self.atalhos = AtalhosGlobais()
         self.atalhos.acionado.connect(self._atalho)
         self._registrar_atalhos()
@@ -75,6 +80,7 @@ class Aplicativo:
     def encerrar(self) -> None:
         self.provedor.parar()
         self.atalhos.liberar()
+        self.hud.parar()
         self.salvar()
         self.bandeja.hide()
 
@@ -153,6 +159,8 @@ class Aplicativo:
             log.exception("não foi possível salvar a configuração")
 
     def _novo_quadro(self, quadro: Quadro) -> None:
+        if self.hud.rodando:
+            self.hud.atualizar(quadro.estado, self.opcoes_hud())
         carro = quadro.estado.carro_jogador
         if quadro.estado.pilotando and carro is not None and carro.classe:
             self._classe_detectada(carro.classe)
@@ -206,6 +214,33 @@ class Aplicativo:
             widget.escala = escala
             widget.ajustar_tamanho()
             widget.update()
+        self.salvar()
+        self.notificar()
+
+    def opcoes_hud(self) -> dict:
+        hud = self.config.geral["hud"]
+        return {chave: hud[chave] for chave in ("linhas", "classes", "briga", "gaps")}
+
+    def endereco_hud(self) -> str:
+        hud = self.config.geral["hud"]
+        return f"http://{ip_local() if hud['rede'] else 'localhost'}:{hud['porta']}"
+
+    def definir_hud(self, chave: str, valor) -> None:
+        hud = self.config.geral["hud"]
+        hud[chave] = valor
+        if chave in ("ativo", "porta", "rede"):
+            if hud["ativo"]:
+                self.hud.iniciar(hud["porta"], hud["rede"])
+            else:
+                self.hud.parar()
+        self.salvar()
+        self.notificar()
+
+    def definir_tema(self, nome: str) -> None:
+        self.config.geral["tema"] = nome
+        tema.aplicar(nome)
+        for widget in self.widgets.values():
+            widget.reconfigurar()
         self.salvar()
         self.notificar()
 

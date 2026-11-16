@@ -4,8 +4,8 @@ from PySide6.QtCore import QRectF, QSize, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from ..calculos.formatacao import intervalo, nome_curto, numero_carro, tempo_volta
-from .base import DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
+from ..calculos.formatacao import intervalo, numero_carro, tempo_volta
+from .base import CENTRO, DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
 
 ALTURA_LINHA = 21
 CABECALHO = 22
@@ -81,8 +81,16 @@ class Classificacao(WidgetOverlay):
 
     def desenhar(self, p: QPainter, dados) -> None:
         classe, total, linhas = dados
-        texto(p, QRectF(10, 4, 200, 16), classe or "Classificação", tema.TEXTO, 9, True)
-        rotulo(p, QRectF(170, 4, 162, 16), f"{total} carros", DIR)
+        if tema.FAIXA_CABECALHO:
+            faixa = QRectF(4, 3, self.largura - 8, 17)
+            p.setPen(Qt.PenStyle.NoPen)
+            p.setBrush(tema.classe(classe)[1] if classe != "Geral" else tema.TRILHO)
+            p.drawRoundedRect(faixa, 3, 3)
+            texto(p, faixa, (classe or "Classificação").upper(), tema.TEXTO, 9, True, CENTRO)
+            texto(p, faixa.adjusted(0, 0, -6, 0), str(total), tema.TEXTO, 7.5, False, DIR)
+        else:
+            texto(p, QRectF(10, 4, 200, 16), classe or "Classificação", tema.TEXTO, 9, True)
+            rotulo(p, QRectF(170, 4, 162, 16), f"{total} carros", DIR)
         y = float(CABECALHO + 2)
         for pos, cls, numero, piloto, ultima, gap, boxes, jogador, salto in linhas:
             linha = QRectF(4, y, self.largura - 8, ALTURA_LINHA - 2)
@@ -97,10 +105,10 @@ class Classificacao(WidgetOverlay):
                 p.drawRoundedRect(QRectF(4, y, 3, ALTURA_LINHA - 2), 1.5, 1.5)
             meio = y + (ALTURA_LINHA - 2) / 2
             altura = ALTURA_LINHA - 2
-            texto(p, QRectF(8, y, 22, altura), str(pos), tema.TEXTO_SECUNDARIO, 8.5, True, DIR)
+            texto(p, QRectF(8, y, 22, altura), str(pos), tema.TEXTO_POSICAO, 8.5, True, DIR)
             selo_classe(p, QRectF(36, meio - 7, 28, 14), cls)
             texto(p, QRectF(68, y, 28, altura), numero, tema.TEXTO_APAGADO, 8, True)
-            texto(p, QRectF(96, y, 116, altura), nome_curto(piloto, 16), tema.TEXTO, 9, jogador)
+            texto(p, QRectF(96, y, 116, altura), tema.nome_piloto(piloto, 16), tema.TEXTO, 9, jogador)
             cor_volta = tema.TEXTO_APAGADO if boxes else tema.TEXTO_SECUNDARIO
             texto(p, QRectF(206, y, 64, altura), "BOX" if boxes else tempo_volta(ultima), cor_volta, 8, False, DIR)
             texto(p, QRectF(270, y, 62, altura), gap, tema.TEXTO, 8.5, False, DIR)

@@ -65,9 +65,28 @@ Tudo vale na hora e é salvo sozinho, sem botão de salvar.
 ![Janela de configurações](docs/configuracoes.png)
 
 - **Geral**: travar e restaurar posições, layout separado por classe, esconder fora da pista, fonte de dados (**Demonstração** simula dados para posicionar tudo sem abrir o jogo), taxa de atualização, gravação das voltas e aviso de atualização.
-- **Aparência**: tamanho (80% a 150%) e opacidade.
+- **Aparência**: tema (Padrão ou Transmissão), tamanho (80% a 150%) e opacidade.
 - **Atalhos**: clique no campo e aperte a combinação nova.
+- **Transmissão**: HUD para OBS (veja abaixo).
 - **Uma página por widget**: liga e desliga, além das opções dele (unidade de pressão e velocidade, carros no relativo, luz de troca, alcance do radar, temperatura ideal do freio, etc.) com **Restaurar padrão**.
+
+### Tema Transmissão
+
+**Configurações → Aparência → Tema → Transmissão** deixa os widgets com cara de TV: fundo azul-marinho, borda azul, fonte condensada, sobrenomes em caixa alta e faixa da classe no cabeçalho da classificação. A troca é na hora.
+
+![Widgets no tema Transmissão](docs/tema-transmissao.png)
+
+### HUD para transmissão (OBS)
+
+Para quem transmite a corrida: o app serve uma página com torre de classificação e a caixa de briga com o carro da frente, para quem assiste.
+
+1. **Configurações → Transmissão → Ligar HUD de transmissão** e clique em **Copiar endereço** (por padrão, `http://localhost:8770`).
+2. No OBS: **Fontes → + → Navegador**, cole o endereço e use largura `1920` e altura `1080`.
+3. Pronto. O fundo é transparente e o HUD some sozinho quando o jogo não está conectado.
+
+Transmite de um segundo PC? Ligue **Acessar de outro computador** e use o endereço com o IP mostrado (o Windows pode pedir para liberar no firewall). Para posicionar a fonte no OBS sem o jogo aberto, use **Geral → Fonte de dados → Demonstração**. Dá para mostrar todas as classes ou só a do carro em foco, limitar as linhas e esconder a caixa de briga.
+
+![HUD de transmissão](docs/hud.png)
 
 ### Layout por classe
 
@@ -147,9 +166,10 @@ dmt_overlay/
 ├── atalhos.py        atalhos globais (RegisterHotKey no Windows)
 ├── gravador.py       voltas em CSV
 ├── layouts.py        layout por classe
+├── hud.py            HUD de transmissão (servidor local para o OBS; página em recursos/hud)
 ├── atualizacao.py    aviso de versão nova (API do GitHub)
 ├── config.py         configuração em JSON
-└── tema.py           cores, fontes e cores das classes
+└── tema.py           temas (Padrão e Transmissão), fontes e cores das classes
 ```
 
 ### Criando um widget
@@ -171,6 +191,8 @@ class Exemplo(WidgetOverlay):
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) para o fluxo de branches e commits.
 
 ## Créditos
+
+- Fonte do tema Transmissão: [Barlow Condensed](https://github.com/jpt/barlow), licença SIL Open Font License (`dmt_overlay/recursos/fontes/OFL.txt`).
 
 - Mapeamento da API de memória compartilhada do LMU: [pyLMUSharedMemory](https://github.com/TinyPedal/pyLMUSharedMemory) (MIT).
 - Inspirado no [TinyPedal](https://github.com/TinyPedal/TinyPedal).

@@ -4,7 +4,6 @@ from PySide6.QtCore import QRectF, QSize, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from ..calculos.formatacao import nome_curto
 from ..calculos.multiclasse import alerta_multiclasse
 from .base import DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
 
@@ -57,7 +56,7 @@ class Multiclasse(WidgetOverlay):
             p.drawRoundedRect(QRectF(4, y, 4, ALTURA_LINHA - 4), 2, 2)
             selo_classe(p, QRectF(14, y + 7, 30, 14), classe)
             rotulo(p, QRectF(52, y + 1, 120, 12), titulo)
-            texto(p, QRectF(52, y + 12, 130, 14), nome_curto(piloto, 18), tema.TEXTO_SECUNDARIO, 8)
+            texto(p, QRectF(52, y + 12, 130, 14), tema.nome_piloto(piloto, 18), tema.TEXTO_SECUNDARIO, 8)
             urgente = atras and tempo < 1.0
             cor = tema.CRITICO if urgente else tema.ALERTA if atras else tema.TEXTO
             texto(p, QRectF(170, y, 72, ALTURA_LINHA - 4), f"{tempo:.1f}s", cor, 14, True, DIR)

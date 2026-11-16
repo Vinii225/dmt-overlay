@@ -4,7 +4,7 @@ from PySide6.QtCore import QRectF, QSize, Qt
 from PySide6.QtGui import QPainter
 
 from .. import tema
-from ..calculos.formatacao import nome_curto, numero_carro
+from ..calculos.formatacao import numero_carro
 from ..calculos.relativo import calcular_relativo
 from .base import CENTRO, DIR, Opcao, WidgetOverlay, selo_classe, texto
 
@@ -59,10 +59,10 @@ class Relativo(WidgetOverlay):
             else:
                 cor_nome = tema.TEXTO
             meio = y + (ALTURA_LINHA - 2) / 2
-            texto(p, QRectF(10, y, 24, ALTURA_LINHA - 2), str(pos), tema.TEXTO_SECUNDARIO, 8.5, True, DIR)
+            texto(p, QRectF(10, y, 24, ALTURA_LINHA - 2), str(pos), tema.TEXTO_POSICAO, 8.5, True, DIR)
             selo_classe(p, QRectF(40, meio - 7, 28, 14), classe)
             texto(p, QRectF(72, y, 30, ALTURA_LINHA - 2), numero, tema.TEXTO_APAGADO, 8, True)
-            texto(p, QRectF(102, y, 118, ALTURA_LINHA - 2), nome_curto(piloto, 16), cor_nome, 9, jogador)
+            texto(p, QRectF(102, y, 118, ALTURA_LINHA - 2), tema.nome_piloto(piloto, 16), cor_nome, 9, jogador)
             if boxes:
                 caixa = QRectF(222, meio - 6, 22, 12)
                 p.setPen(Qt.PenStyle.NoPen)
