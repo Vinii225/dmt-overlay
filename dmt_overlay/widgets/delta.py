@@ -27,7 +27,7 @@ class Delta(WidgetOverlay):
         atual = e.sessao.tempo_decorrido - j.inicio_volta if j.inicio_volta > 0 else 0.0
         melhor = carro.melhor_volta if carro else 0.0
         ultima = carro.ultima_volta if carro else 0.0
-        return (round(j.delta_melhor, 2), round(atual, 1), ultima, melhor, j.volta_invalidada)
+        return (round(j.delta_melhor, 3), round(atual, 3), ultima, melhor, j.volta_invalidada)
 
     def desenhar(self, p: QPainter, dados) -> None:
         delta, atual, ultima, melhor, invalida = dados
@@ -48,9 +48,9 @@ class Delta(WidgetOverlay):
         p.drawRect(QRectF(meio - 1, trilho.top() - 3, 2, trilho.height() + 6))
 
         cor_texto = tema.BOM if delta < -0.005 else tema.CRITICO if delta > 0.005 else tema.TEXTO
-        texto(p, QRectF(8, 18, 110, 30), f"{delta:+.2f}", cor_texto, 18, True)
+        texto(p, QRectF(8, 18, 110, 30), f"{delta:+.3f}", cor_texto, 18, True)
         cor_atual = tema.CRITICO if invalida else tema.TEXTO
-        texto(p, QRectF(118, 18, 124, 30), tempo_volta(atual)[:-2] if atual > 0 else "-:--.-", cor_atual, 13, True, DIR)
+        texto(p, QRectF(118, 18, 124, 30), tempo_volta(atual) if atual > 0 else "-:--.---", cor_atual, 13, True, DIR)
         rotulo(p, QRectF(8, 50, 40, 14), "Última")
         texto(p, QRectF(44, 50, 70, 14), tempo_volta(ultima), tema.TEXTO_SECUNDARIO, 8.5)
         rotulo(p, QRectF(128, 50, 50, 14), "Melhor")

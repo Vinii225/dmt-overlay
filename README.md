@@ -30,7 +30,7 @@ Todos ligam, desligam e se ajustam em **Configurações**. Os marcados com * vê
 | **Marcha e RPM** | Marcha, velocidade, RPM e luzes de troca. Avisa o limitador de box. |
 | **Pedais** | Acelerador, freio, embreagem e volante, com TC e ABS atuando. |
 | **Volante e inputs*** | Volante de GT3 girando com o seu, marcha e velocidade ao lado e o gráfico do acelerador e do freio nos últimos segundos (amarelo com ABS ou TC). |
-| **Delta** | Delta para a sua melhor volta, volta atual (vermelha se invalidada), última e melhor. |
+| **Delta** | Delta para a sua melhor volta em milésimos, volta atual (vermelha se invalidada), última e melhor. |
 | **Eletrônica** | Balanço de freio, TC, corte e slip, ABS e mapa de motor. |
 | **Track limits** | Pontos acumulados e quanto falta para a punição. |
 
@@ -41,7 +41,7 @@ Todos ligam, desligam e se ajustam em **Configurações**. Os marcados com * vê
 | **Relativo** | Carros à frente e atrás na pista. Vermelho = uma volta à sua frente, azul = uma volta atrás. |
 | **Classificação** | Sua classe: líderes e quem está perto de você, última volta e distância para o líder. |
 | **Radar** | Aparece com carro por perto e acende a lateral quando há alguém lado a lado. |
-| **Alerta multiclasse** | Carro mais rápido de outra classe chegando, ou tráfego lento logo à frente. |
+| **Tráfego multiclasse** | Bandeira azul quando uma classe mais rápida chega por trás, ou aviso de classe mais lenta logo à frente. Mostra o mais perto, com a barra enchendo conforme ele chega. |
 | **Sessão** | Tempo ou voltas restantes, posição, hora na pista, temperaturas e chuva. |
 
 **Estratégia**

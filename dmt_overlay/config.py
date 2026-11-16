@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 PADRAO_GERAL: dict[str, Any] = {
     "fonte_dados": "lmu",
-    "taxa_atualizacao": 30,
+    "taxa_atualizacao": 60,
     "travado": True,
     "ocultar_fora_da_pista": True,
     "escala": 1.0,

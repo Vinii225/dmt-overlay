@@ -9,6 +9,9 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 - O visual de transmissão virou o único: o tema antigo e a escolha de tema saíram.
 - **Volante e inputs** redesenhado: volante de GT3, marcha e velocidade à direita dele e o gráfico do acelerador e freio depois, com uma faixa fina de RPM.
 - **Rivais: pneus e VE** mostra todas as classes: a sua, de quem está pilotando, com o top 5 e você; as outras com o top 3 (ajustável).
+- **Tráfego multiclasse** (antes Alerta multiclasse): bandeira azul com classe mais rápida chegando ou setas com classe mais lenta à frente, mostrando só o mais perto, com barra de proximidade e piscando no último segundo da bandeira azul.
+- Delta e volta atual com 3 casas depois do ponto.
+- Atualização padrão passou de 30 para 60 Hz, para tudo andar mais liso (quem já usa pode mudar em Geral → Taxa de atualização).
 
 ## [0.3.0-beta.2] - 2026-11-16
 
