@@ -25,6 +25,12 @@ class AlertaMulticlasse:
     def vazio(self) -> bool:
         return self.chegando is None and self.a_frente is None
 
+    @property
+    def mais_perto(self) -> LinhaRelativo | None:
+        """O que importa agora: quem está mais perto, seja chegando por trás ou à frente."""
+        candidatos = [linha for linha in (self.chegando, self.a_frente) if linha is not None]
+        return min(candidatos, key=lambda linha: abs(linha.tempo), default=None)
+
 
 def alerta_multiclasse(estado: Estado, janela_atras: float = 3.0, janela_frente: float = 3.0) -> AlertaMulticlasse:
     jogador = estado.carro_jogador

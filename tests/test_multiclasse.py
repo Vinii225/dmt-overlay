@@ -28,3 +28,14 @@ def test_gt3_a_frente_de_hypercar():
 def test_mesma_classe_nao_alerta():
     carros = [carro(1, 1, 10, 4950), carro(2, 2, 10, 5000, jogador=True)]
     assert alerta_multiclasse(estado(carros)).vazio
+
+
+def test_mostra_o_mais_perto():
+    carros = [
+        carro(1, 1, 10, 5080, classe="LMGT3"),
+        carro(2, 2, 10, 5000, jogador=True, classe="LMP2"),
+        carro(3, 3, 10, 4950, classe="Hypercar"),
+    ]
+    alerta = alerta_multiclasse(estado(carros))
+    assert alerta.chegando.carro.id == 3 and alerta.a_frente.carro.id == 1
+    assert alerta.mais_perto.carro.id == 3

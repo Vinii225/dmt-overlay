@@ -8,7 +8,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from PySide6.QtWidgets import QApplication  # noqa: E402
 
 from dmt_overlay.provedor import Quadro  # noqa: E402
-from dmt_overlay.widgets.rivais import Rivais, quantidade  # noqa: E402
+from dmt_overlay.widgets.rivais import Rivais  # noqa: E402
 
 
 @pytest.fixture(scope="module")
@@ -16,44 +16,51 @@ def app():
     return QApplication.instance() or QApplication([])
 
 
-def grid(classe, eu_pos):
+def misto(minha, eu_pos):
+    """8 carros da classe do jogador e 5 de cada uma das outras duas."""
     carros = [
-        carro(i, i, 10, 0.0, classe=classe, jogador=i == eu_pos, pneus_restante=(0.9, 0.8, 0.7, 0.6), energia=0.5)
+        carro(i, i, 10, 0.0, classe=minha, jogador=i == eu_pos, pneus_restante=(0.9, 0.8, 0.7, 0.6), energia=0.5)
         for i in range(1, 9)
     ]
-    carros.append(carro(99, 9, 10, 0.0, classe="Outra"))
+    outras = [c for c in ("Hypercar", "LMP2", "LMGT3") if c != minha]
+    for k, classe in enumerate(outras):
+        carros += [carro(100 + 10 * k + i, 9 + 5 * k + i, 10, 0.0, classe=classe) for i in range(5)]
     return estado(carros)
 
 
-def test_quantidade_por_classe():
-    config = Rivais.padrao()
-    assert quantidade(config, "Hypercar") == 5
-    assert quantidade(config, "LMP2") == 3
-    assert quantidade(config, "LMGT3") == 3
-    assert quantidade(config, "GTE") == 3
-
-
-def test_hypercar_mostra_top5_e_o_jogador(app):
+def test_sua_classe_mostra_mais_e_as_outras_top3(app):
     widget = Rivais(Rivais.padrao(), 1.0)
-    widget.atualizar(Quadro(grid("Hypercar", 7)))
-    classe, linhas = widget._dados
-    assert [linha[0] for linha in linhas] == [1, 2, 3, 4, 5, 7]
-    assert linhas[-1][-1] is True
-    assert linhas[0][4] == 0.6 and linhas[0][5] == 0.5
+    widget.atualizar(Quadro(misto("LMGT3", 7)))
+    grupos = widget._dados
+    assert [g[0] for g in grupos] == ["LMGT3", "Hypercar", "LMP2"]
+    assert [linha[0] for linha in grupos[0][1]] == [1, 2, 3, 4, 5, 7]
+    assert grupos[0][1][-1][-1] is True
+    assert grupos[0][1][0][4] == 0.6 and grupos[0][1][0][5] == 0.5
+    assert all(len(linhas) == 3 for _, linhas in grupos[1:])
+    assert widget.height() == widget.tamanho_base().height()
     assert not widget.grab().isNull()
 
 
-def test_lmp2_top3_sem_repetir_jogador(app):
+def test_classe_muda_com_o_carro_do_jogador(app):
     widget = Rivais(Rivais.padrao(), 1.0)
-    widget.atualizar(Quadro(grid("LMP2", 2)))
-    assert [linha[0] for linha in widget._dados[1]] == [1, 2, 3]
+    widget.atualizar(Quadro(misto("Hypercar", 2)))
+    assert widget._dados[0][0] == "Hypercar"
+    assert [linha[0] for linha in widget._dados[0][1]] == [1, 2, 3, 4, 5]
+
+
+def test_so_a_sua_classe(app):
+    config = Rivais.padrao()
+    config["mostrar_outras"] = False
+    widget = Rivais(config, 1.0)
+    widget.atualizar(Quadro(misto("LMP2", 1)))
+    assert [g[0] for g in widget._dados] == ["LMP2"]
 
 
 def test_dado_ausente_vira_traco(app):
-    e = grid("LMGT3", 1)
+    e = misto("LMGT3", 1)
     for c in e.carros:
         c.pneus_restante, c.energia = (), -1.0
     widget = Rivais(Rivais.padrao(), 1.0)
     widget.atualizar(Quadro(e))
-    assert all(linha[4] == -1.0 and linha[5] == -1.0 for linha in widget._dados[1])
+    assert all(linha[4] == -1.0 and linha[5] == -1.0 for _, linhas in widget._dados for linha in linhas)
     assert not widget.grab().isNull()

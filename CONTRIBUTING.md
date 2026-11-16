@@ -35,7 +35,7 @@ dmt_overlay/
 ├── hud.py            HUD de transmissão (servidor local para o OBS; página em recursos/hud)
 ├── atualizacao.py    aviso de versão nova (API do GitHub)
 ├── config.py         configuração em JSON
-└── tema.py           temas (Padrão e Transmissão), fontes e cores das classes
+└── tema.py           cores, fontes e cores das classes
 ```
 
 ## Criando um widget

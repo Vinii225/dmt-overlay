@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 PADRAO_GERAL: dict[str, Any] = {
     "fonte_dados": "lmu",
-    "taxa_atualizacao": 30,
+    "taxa_atualizacao": 60,
     "travado": True,
     "ocultar_fora_da_pista": True,
     "escala": 1.0,
@@ -22,7 +22,6 @@ PADRAO_GERAL: dict[str, Any] = {
     "gravar_voltas": True,
     "layout_por_classe": False,
     "layouts": {},
-    "tema": "padrao",
     "hud": {"ativo": False, "porta": 8770, "rede": False, "linhas": 18, "classes": "todas", "briga": True, "gaps": True},
     # Modo narrador: com o app aberto assistindo uma corrida (sem carro), segue um carro escolhido.
     "narrador": {"ativo": False, "modo": "briga", "numero": ""},
