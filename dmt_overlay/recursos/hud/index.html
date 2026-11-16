@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DMT Overlay - HUD de transmissão</title>
+<style>
+  @font-face { font-family: "Barlow Condensed"; font-weight: 500; src: url("/fontes/BarlowCondensed-Medium.ttf"); }
+  @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("/fontes/BarlowCondensed-SemiBold.ttf"); }
+  @font-face { font-family: "Barlow Condensed"; font-weight: 600; font-style: italic; src: url("/fontes/BarlowCondensed-SemiBoldItalic.ttf"); }
+  @font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: italic; src: url("/fontes/BarlowCondensed-BoldItalic.ttf"); }
+
+  :root {
+    --fundo: rgba(28, 25, 80, 0.94);
+    --fundo-fim: rgba(14, 12, 46, 0.94);
+    --linha: rgba(255, 255, 255, 0.05);
+    --borda: #3498ff;
+    --foco: rgba(64, 150, 255, 0.35);
+    --texto: #ffffff;
+    --apagado: #8d91c9;
+    --bom: #4fdc8a;
+    --ruim: #ff6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; background: transparent; overflow: hidden; }
+  body { font-family: "Barlow Condensed", "Segoe UI", sans-serif; color: var(--texto); font-weight: 600; }
+  #hud { opacity: 0; transition: opacity .4s; }
+  #hud.ativo { opacity: 1; }
+
+  .painel {
+    background: linear-gradient(180deg, var(--fundo), var(--fundo-fim));
+    border: 2px solid var(--borda);
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .35);
+  }
+
+  /* Torre */
+  #torre { position: absolute; left: 28px; top: 24px; width: 290px; padding: 8px 6px 6px; }
+  #relogio { text-align: center; padding: 2px 0 8px; }
+  #relogio .tipo { font-size: 15px; color: var(--apagado); letter-spacing: 2px; }
+  #relogio .tempo { font-size: 30px; font-style: italic; font-weight: 700; line-height: 1; }
+  #relogio.amarela .tempo { color: #ffd23f; }
+  .classe { margin-top: 4px; }
+  .faixa {
+    font-style: italic; font-weight: 700; font-size: 19px; text-align: center; letter-spacing: 1px;
+    border-radius: 4px; padding: 1px 0; margin-bottom: 3px;
+  }
+  .carro { display: flex; align-items: center; height: 29px; margin-bottom: 2px; background: var(--linha); border-radius: 3px; }
+  .carro.foco { background: var(--foco); box-shadow: inset 3px 0 0 var(--borda); }
+  .carro.salto { margin-top: 8px; }
+  .pos { width: 30px; text-align: right; font-style: italic; font-weight: 700; font-size: 19px; padding-right: 6px; }
+  .num { width: 40px; height: 23px; line-height: 23px; text-align: center; border-radius: 3px; font-weight: 700; font-size: 17px; }
+  .piloto { flex: 1; padding-left: 10px; font-size: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gap { padding-right: 8px; font-size: 16px; color: var(--apagado); font-weight: 500; }
+  .tag-box { font-size: 13px; font-weight: 700; background: #ffd23f; color: #141233; border-radius: 3px; padding: 0 5px; margin-right: 8px; }
+  #pista { text-align: center; font-size: 15px; letter-spacing: 2px; color: var(--apagado); padding-top: 6px; }
+
+  /* Caixa de briga */
+  #briga {
+    position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%);
+    width: 880px; height: 96px; display: flex; align-items: stretch; overflow: hidden;
+    transition: opacity .3s;
+  }
+  #briga.oculto { opacity: 0; }
+  .lado { flex: 1; display: flex; align-items: center; gap: 14px; padding: 0 16px; }
+  .lado.direita { flex-direction: row-reverse; text-align: right; }
+  .lado .posicao { font-style: italic; font-weight: 700; font-size: 26px; }
+  .lado .posicao sup { font-size: 14px; }
+  .lado .equipe { font-size: 21px; font-style: italic; font-weight: 700; line-height: 1.05; max-width: 190px; }
+  .lado .nome { font-size: 16px; color: var(--apagado); font-weight: 500; }
+  .lado .num { width: 54px; height: 54px; line-height: 54px; font-size: 26px; border-radius: 6px; }
+  .centro { width: 290px; background: rgba(255, 255, 255, .06); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .centro .rotulo { font-size: 13px; letter-spacing: 2px; color: var(--apagado); }
+  .centro .valor { font-size: 38px; font-style: italic; font-weight: 700; line-height: 1; }
+  .centro .valor small { font-size: 18px; }
+  .voltas { font-size: 14px; display: grid; grid-template-columns: 70px 60px 70px 56px; column-gap: 6px; text-align: center; margin-top: 3px; }
+  .voltas .lap { color: var(--apagado); }
+  .bom { color: var(--bom); } .ruim { color: var(--ruim); }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="torre" class="painel">
+    <div id="relogio"><div class="tipo"></div><div class="tempo"></div></div>
+    <div id="classes"></div>
+    <div id="pista"></div>
+  </div>
+  <div id="briga" class="painel oculto"></div>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Com muitos carros, mostra os líderes e quem está perto do carro em foco.
+function selecionar(carros, total, topo = 3) {
+  if (carros.length <= total) return carros.map((c) => ({ ...c, salto: false }));
+  const i = Math.max(0, carros.findIndex((c) => c.foco));
+  const resto = total - topo;
+  const inicio = Math.max(topo, Math.min(i - Math.floor(resto / 2), carros.length - resto));
+  const indices = [...new Set([...Array(topo).keys(), ...Array.from({ length: resto }, (_, k) => inicio + k)])].sort((a, b) => a - b);
+  return indices.map((k, n) => ({ ...carros[k], salto: n > 0 && k !== indices[n - 1] + 1 }));
+}
+
+function numero(c, cor) {
+  return `<div class="num" style="background:${esc(cor)}">${esc(c.numero || "–")}</div>`;
+}
+
+function torre(d) {
+  const o = d.opcoes || {};
+  $("#relogio .tipo").textContent = d.sessao.tipo;
+  $("#relogio .tempo").textContent = d.sessao.relogio;
+  $("#relogio").classList.toggle("amarela", d.sessao.amarela);
+  $("#pista").textContent = d.sessao.pista;
+  const linhas = Math.max(3, o.linhas || 18);
+  $("#classes").innerHTML = d.classes.map((cl) => `
+    <div class="classe">
+      <div class="faixa" style="background:${esc(cl.cor)}">${esc(cl.nome)}</div>
+      ${selecionar(cl.carros, d.classes.length > 1 ? Math.max(3, Math.floor(linhas / d.classes.length)) : linhas).map((c) => `
+        <div class="carro${c.foco ? " foco" : ""}${c.salto ? " salto" : ""}">
+          <div class="pos">${c.pos}</div>
+          ${numero(c, cl.cor)}
+          <div class="piloto">${esc(c.piloto)}</div>
+          ${c.box ? '<span class="tag-box">BOX</span>' : `<div class="gap">${o.gaps === false ? "" : esc(c.gap)}</div>`}
+        </div>`).join("")}
+    </div>`).join("");
+}
+
+function lado(c, cor, direita) {
+  return `
+    <div class="lado${direita ? " direita" : ""}">
+      <div class="posicao">${c.pos}<sup>º</sup></div>
+      <div><div class="equipe">${esc(c.equipe || c.piloto)}</div><div class="nome">${esc(c.nome)}</div></div>
+      ${numero(c, cor)}
+    </div>`;
+}
+
+function briga(d) {
+  const b = d.briga;
+  const caixa = $("#briga");
+  if (!b || d.opcoes?.briga === false) { caixa.classList.add("oculto"); return; }
+  caixa.classList.remove("oculto");
+  const voltas = b.voltas.map((v) => `
+    <span>${esc(v.frente)}</span><span class="lap">VOLTA ${v.volta}</span><span>${esc(v.foco)}</span>
+    <span class="${v.dif.startsWith("-") ? "bom" : "ruim"}">${esc(v.dif)}</span>`).join("");
+  caixa.innerHTML = `
+    ${lado(b.frente, b.cor, false)}
+    <div class="centro">
+      <div class="rotulo">INTERVALO</div>
+      <div class="valor">${b.gap ? `+${esc(b.gap)}<small>s</small>` : "–"}</div>
+      <div class="voltas">${voltas}</div>
+    </div>
+    ${lado(b.foco, b.cor, true)}`;
+}
+
+async function atualizar() {
+  try {
+    const d = await (await fetch("/dados", { cache: "no-store" })).json();
+    $("#hud").classList.toggle("ativo", !!d.ativo);
+    if (d.ativo) { torre(d); briga(d); }
+  } catch {
+    $("#hud").classList.remove("ativo");
+  }
+  setTimeout(atualizar, 200);
+}
+atualizar();
+</script>
+</body>
+</html>

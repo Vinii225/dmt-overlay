@@ -23,6 +23,7 @@ PADRAO_GERAL: dict[str, Any] = {
     "layout_por_classe": False,
     "layouts": {},
     "tema": "padrao",
+    "hud": {"ativo": False, "porta": 8770, "rede": False, "linhas": 18, "classes": "todas", "briga": True, "gaps": True},
 }
 
 

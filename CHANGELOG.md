@@ -10,6 +10,8 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 - Gravação das voltas em CSV (uma linha por volta, um arquivo por sessão) com tempo, stint, consumo, pneus e condições, para análise pós-corrida.
 - Janela de configurações: opções gerais, aparência, atalhos e uma página por widget, sem editar o `config.json`.
 - Layout separado por classe: posições e widgets ligados de cada classe, trocando sozinho ao mudar de carro (desligado por padrão).
+- Tema Transmissão, com visual de TV: azul-marinho, fonte condensada, sobrenomes em caixa alta e faixa da classe.
+- HUD de transmissão para OBS: torre de classificação por classe e caixa de briga com o carro da frente, servida pelo próprio app (Configurações → Transmissão).
 
 ### Mudanças
 

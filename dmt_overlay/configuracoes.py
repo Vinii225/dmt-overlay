@@ -4,8 +4,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QKeySequence
+from PySide6.QtCore import Qt, QUrl
+from PySide6.QtGui import QDesktopServices, QGuiApplication, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractSpinBox,
     QCheckBox,
@@ -200,6 +200,7 @@ class JanelaConfiguracoes(QWidget):
         self._adicionar("Geral", self._pagina_geral())
         self._adicionar("Aparência", self._pagina_aparencia())
         self._adicionar("Atalhos", self._pagina_atalhos())
+        self._adicionar("Transmissão", self._pagina_transmissao())
         self._cabecalho("Widgets")
         for widget in self.app.widgets.values():
             self._adicionar(widget.titulo, self._pagina_widget(widget))
@@ -374,6 +375,87 @@ class JanelaConfiguracoes(QWidget):
         pagina.secao("Teclado")
         for nome, rotulo in ATALHOS:
             pagina.campo(rotulo, self._editor_atalho(nome))
+        pagina.fim()
+        return pagina
+
+    def _pagina_transmissao(self) -> QWidget:
+        app, hud = self.app, self.app.config.geral["hud"]
+        pagina = _Pagina(
+            "Transmissão",
+            "HUD para quem transmite a corrida: torre de classificação e a briga com o carro da frente, para quem assiste.",
+        )
+        pagina.secao("HUD para OBS")
+        pagina.campo("Ligar HUD de transmissão", self._caixa(lambda: hud["ativo"], lambda v: app.definir_hud("ativo", v)))
+
+        endereco = QLabel()
+        endereco.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        endereco.setStyleSheet("font-size: 15px; font-weight: 600; color: #2fbf71;")
+        estado = _rotulo("", "ajuda")
+        copiar = QPushButton("Copiar endereço")
+
+        def copiar_endereco() -> None:
+            QGuiApplication.clipboard().setText(app.endereco_hud())
+            estado.setText("Endereço copiado.")
+
+        copiar.clicked.connect(copiar_endereco)
+        abrir = QPushButton("Abrir no navegador")
+        abrir.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(app.endereco_hud())))
+
+        def escrever(_rotulo_endereco: QLabel, ativo: bool) -> None:
+            endereco.setText(app.endereco_hud())
+            for widget in (endereco, copiar, abrir):
+                widget.setEnabled(ativo and app.hud.rodando)
+            if ativo and app.hud.erro:
+                estado.setText(app.hud.erro + " Troque a porta abaixo.")
+            elif ativo:
+                estado.setText("No ar. Ele some sozinho quando o jogo não está conectado.")
+            else:
+                estado.setText("Desligado.")
+
+        self._ligar(endereco, lambda: hud["ativo"], escrever)
+        pagina.adicionar(endereco)
+        pagina.adicionar(_botoes(copiar, abrir))
+        pagina.adicionar(estado)
+        pagina.adicionar(_rotulo(
+            "No OBS: Fontes → + → Navegador, cole o endereço e use largura 1920 e altura 1080. "
+            "Para posicionar sem o jogo, use Geral → Fonte de dados → Demonstração.",
+            "ajuda",
+        ))
+
+        pagina.secao("Rede")
+        porta = QSpinBox()
+        porta.setRange(1024, 65535)
+        porta.setKeyboardTracking(False)
+        porta.setFixedWidth(130)
+        porta.valueChanged.connect(lambda v: app.definir_hud("porta", v))
+        self._ligar(porta, lambda: hud["porta"], lambda s, v: s.setValue(int(v)))
+        pagina.campo("Porta", porta)
+        pagina.campo(
+            "Acessar de outro computador",
+            self._caixa(lambda: hud["rede"], lambda v: app.definir_hud("rede", v)),
+            "Para quem transmite de um segundo PC na mesma rede. O Windows pode pedir para liberar no firewall.",
+        )
+
+        pagina.secao("Conteúdo")
+        classes = QComboBox()
+        classes.addItem("Todas as classes", "todas")
+        classes.addItem("Só a classe do carro em foco", "foco")
+        classes.currentIndexChanged.connect(lambda i: app.definir_hud("classes", classes.itemData(i)))
+        self._ligar(classes, lambda: hud["classes"], lambda c, v: c.setCurrentIndex(max(0, c.findData(v))))
+        pagina.campo("Torre", classes)
+        linhas = QSpinBox()
+        linhas.setRange(6, 40)
+        linhas.setKeyboardTracking(False)
+        linhas.setFixedWidth(130)
+        linhas.valueChanged.connect(lambda v: app.definir_hud("linhas", v))
+        self._ligar(linhas, lambda: hud["linhas"], lambda s, v: s.setValue(int(v)))
+        pagina.campo("Linhas na torre", linhas, "Com mais carros, mostra os líderes e quem está perto do carro em foco.")
+        pagina.campo("Diferença para o líder", self._caixa(lambda: hud["gaps"], lambda v: app.definir_hud("gaps", v)))
+        pagina.campo(
+            "Caixa de briga",
+            self._caixa(lambda: hud["briga"], lambda v: app.definir_hud("briga", v)),
+            "Embaixo: intervalo para o carro da frente e as últimas voltas dos dois.",
+        )
         pagina.fim()
         return pagina
 
