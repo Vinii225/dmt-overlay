@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QKeySequenceEdit,
     QLabel,
+    QLineEdit,
     QListWidget,
     QListWidgetItem,
     QPushButton,
@@ -30,6 +31,7 @@ from PySide6.QtWidgets import (
 from . import __version__, tema
 from .atalhos import interpretar
 from .bandeja import abrir_pasta
+from .calculos.foco import MODOS as MODOS_FOCO
 from .config import pasta_config, pasta_voltas
 from .icone import icone
 from .widgets.base import Opcao, WidgetOverlay
@@ -456,6 +458,26 @@ class JanelaConfiguracoes(QWidget):
             self._caixa(lambda: hud["briga"], lambda v: app.definir_hud("briga", v)),
             "Embaixo: intervalo para o carro da frente e as últimas voltas dos dois.",
         )
+
+        narrador = app.config.geral["narrador"]
+        pagina.secao("Modo narrador")
+        pagina.campo(
+            "Seguir um carro assistindo",
+            self._caixa(lambda: narrador["ativo"], lambda v: app.definir_narrador("ativo", v)),
+            "Para narrar sem estar no carro: entre na corrida como espectador e os widgets e o HUD seguem o carro em foco.",
+        )
+        modo = QComboBox()
+        for chave, nome in MODOS_FOCO:
+            modo.addItem(nome, chave)
+        modo.currentIndexChanged.connect(lambda i: app.definir_narrador("modo", modo.itemData(i)))
+        self._ligar(modo, lambda: narrador["modo"], lambda c, v: c.setCurrentIndex(max(0, c.findData(v))))
+        pagina.campo("Carro em foco", modo, "Briga mais apertada troca sozinha, sem ficar pulando de carro a cada segundo.")
+        numero = QLineEdit()
+        numero.setPlaceholderText("ex.: 50")
+        numero.setFixedWidth(130)
+        numero.editingFinished.connect(lambda: app.definir_narrador("numero", numero.text().strip()))
+        self._ligar(numero, lambda: narrador["numero"], lambda c, v: c.setText(v) if not c.hasFocus() else None)
+        pagina.campo("Número do carro", numero, "Usado no modo Carro pelo número.")
         pagina.fim()
         return pagina
 

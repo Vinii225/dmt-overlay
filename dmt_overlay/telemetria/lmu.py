@@ -111,6 +111,7 @@ class FonteLMU:
         if agora - self._ultimo_scoring >= intervalo_scoring:
             self._ultimo_scoring = agora
             self._ler_scoring(mem)
+            self._ler_rivais(mem)
 
         info_et = self._sessao.tempo_decorrido
         if info_et != self._ultimo_et:
@@ -191,6 +192,21 @@ class FonteLMU:
             if self._id_tele(mem, i) == self._id_jogador:
                 return i
         return indice if indice < ativos else -1
+
+    def _ler_rivais(self, mem: mmap.mmap) -> None:
+        """Pneus e energia virtual de cada carro, no ritmo do scoring (não precisa de 30 Hz)."""
+        ativos = min(mem[_OFF_ATIVOS], _MAX_VEICULOS)
+        por_id = {c.id: c for c in self._carros}
+        for i in range(ativos):
+            t = ld.LMUVehicleTelemetry.from_buffer_copy(mem, _OFF_TELE + i * _TAM_TELE)
+            carro = por_id.get(t.mID)
+            if carro is None:
+                continue
+            restante = tuple(numero(r.mWear) for r in t.mWheels)
+            carro.pneus_restante = restante if any(restante) else ()
+            energia = numero(t.mVirtualEnergy)
+            carro.energia = energia if energia > 0 else -1.0
+            carro.composto = texto(t.mFrontTireCompoundName)
 
     @staticmethod
     def _ler_posicoes(mem: mmap.mmap) -> dict[int, Posicao]:
