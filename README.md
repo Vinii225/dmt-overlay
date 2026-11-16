@@ -34,6 +34,7 @@
 | **Stint e estratégia** | Tempo e voltas do stint, janela de box (primeira e última volta para parar), paradas restantes e quanto abastecer de combustível e energia virtual. |
 | **Radar** | Só aparece com carro por perto (15 m por padrão, ajustável): mostra os carros ao redor na cor da classe e acende a lateral quando há alguém lado a lado. |
 | **Volante e inputs** | Volante que gira com o seu, com a marcha no centro e um anel de RPM, mais o gráfico do acelerador e do freio nos últimos segundos (amarelo quando ABS ou TC atuam). Vem desligado. |
+| **Rivais: pneus e VE** | Pneu e energia virtual dos líderes da sua classe: 5 no Hypercar, 3 no LMP2 e no LMGT3 (ajustável). Online o jogo pode não mandar esses dados; aí aparece "–". Vem desligado. |
 | **Alerta multiclasse** | Só aparece quando precisa: carro mais rápido de outra classe chegando por trás, ou tráfego mais lento logo à frente. |
 
 ## Instalação
@@ -88,6 +89,8 @@ Para quem transmite a corrida: o app serve uma página com torre de classificaç
 Transmite de um segundo PC? Ligue **Acessar de outro computador** e use o endereço com o IP mostrado (o Windows pode pedir para liberar no firewall). Para posicionar a fonte no OBS sem o jogo aberto, use **Geral → Fonte de dados → Demonstração**. Dá para mostrar todas as classes ou só a do carro em foco, limitar as linhas e esconder a caixa de briga.
 
 ![HUD de transmissão](docs/hud.png)
+
+**Narrando sem estar no carro?** Ligue **Transmissão → Modo narrador** e entre na corrida como espectador. Os widgets e o HUD passam a seguir um carro: a **briga mais apertada** (troca sozinha, mas segura cada briga alguns segundos para não ficar pulando), o **líder** ou um **carro pelo número**. Os widgets de pedais e volante ficam vazios, porque o jogo só manda essa telemetria do seu próprio carro.
 
 ### Layout por classe
 

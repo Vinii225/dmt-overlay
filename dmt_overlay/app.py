@@ -13,6 +13,7 @@ from . import __version__, tema
 from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
+from .calculos.foco import Foco, aplicar_foco
 from .config import Config, pasta_config, pasta_voltas
 from .configuracoes import JanelaConfiguracoes
 from .gravador import GravadorVoltas
@@ -42,6 +43,8 @@ class Aplicativo:
         self.config = config
         self.provedor = Provedor(fonte, config.geral["taxa_atualizacao"])
         self.pilotando = False
+        self.narrando = False
+        self.foco = Foco()
         self.ocultos = False
         self.classe = ""
         self.nome_classe = ""
@@ -159,6 +162,14 @@ class Aplicativo:
             log.exception("não foi possível salvar a configuração")
 
     def _novo_quadro(self, quadro: Quadro) -> None:
+        estado = quadro.estado
+        narrador = self.config.geral["narrador"]
+        narrando = narrador["ativo"] and estado.conectado and not estado.pilotando and bool(estado.carros)
+        if narrando:
+            aplicar_foco(estado, self.foco.escolher(estado, narrador["modo"], narrador["numero"]))
+        if narrando != self.narrando:
+            self.narrando = narrando
+            self.atualizar_visibilidade()
         if self.hud.rodando:
             self.hud.atualizar(quadro.estado, self.opcoes_hud())
         carro = quadro.estado.carro_jogador
@@ -174,7 +185,7 @@ class Aplicativo:
 
     def atualizar_visibilidade(self) -> None:
         geral = self.config.geral
-        mostrar = self.pilotando or not geral["ocultar_fora_da_pista"] or not geral["travado"]
+        mostrar = self.pilotando or self.narrando or not geral["ocultar_fora_da_pista"] or not geral["travado"]
         mostrar = mostrar and not self.ocultos
         for widget in self.widgets.values():
             widget.setVisible(mostrar and widget.config["ativo"])
@@ -233,6 +244,13 @@ class Aplicativo:
                 self.hud.iniciar(hud["porta"], hud["rede"])
             else:
                 self.hud.parar()
+        self.salvar()
+        self.notificar()
+
+    def definir_narrador(self, chave: str, valor) -> None:
+        self.config.geral["narrador"][chave] = valor
+        if chave == "modo":
+            self.foco = Foco()
         self.salvar()
         self.notificar()
 

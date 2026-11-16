@@ -24,6 +24,8 @@ PADRAO_GERAL: dict[str, Any] = {
     "layouts": {},
     "tema": "padrao",
     "hud": {"ativo": False, "porta": 8770, "rede": False, "linhas": 18, "classes": "todas", "briga": True, "gaps": True},
+    # Modo narrador: com o app aberto assistindo uma corrida (sem carro), segue um carro escolhido.
+    "narrador": {"ativo": False, "modo": "briga", "numero": ""},
 }
 
 

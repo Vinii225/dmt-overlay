@@ -33,6 +33,7 @@ LAYOUT = {
     "stint": (380, 250),
     "radar": (20, 200),
     "volante": (380, 364),
+    "rivais": (730, 330),
 }
 
 
@@ -70,7 +71,7 @@ def main() -> None:
     quadro = Quadro(estado, resumo, 0.0, estrategia.atualizar(estado, resumo))
 
     config = Config(Path(tempfile.mkdtemp()) / "config.json")
-    largura, altura = round(1370 * escala), round(452 * escala)
+    largura, altura = round(1370 * escala), round(470 * escala)
     tela = QPixmap(largura, altura)
     p = QPainter(tela)
     gradiente = QLinearGradient(0, 0, largura, altura)

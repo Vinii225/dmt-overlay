@@ -32,6 +32,8 @@ Deu problema? Abra uma issue com o `dmt-overlay.log` (Geral → Abrir pasta de c
 - Layout separado por classe: posições e widgets ligados de cada classe, trocando sozinho ao mudar de carro (desligado por padrão).
 - Tema Transmissão, com visual de TV: azul-marinho, fonte condensada, sobrenomes em caixa alta e faixa da classe.
 - Widget **Volante e inputs** (desligado por padrão): volante que gira com a marcha no centro, anel de RPM e gráfico do acelerador e freio nos últimos segundos, com ABS e TC em amarelo.
+- Widget **Rivais: pneus e VE** (desligado por padrão): desgaste do pneu e energia virtual do topo da sua classe (5 no Hypercar, 3 no LMP2 e no LMGT3, ajustável) e você junto.
+- **Modo narrador** (Transmissão → Modo narrador): assistindo como espectador, widgets e HUD seguem a briga mais apertada, o líder ou um carro pelo número.
 - HUD de transmissão para OBS: torre de classificação por classe e caixa de briga com o carro da frente, servida pelo próprio app (Configurações → Transmissão).
 
 ### Mudanças

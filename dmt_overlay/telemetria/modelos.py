@@ -91,6 +91,10 @@ class Carro:
     jogador: bool
     tempo_estimado: float
     finalizado: int = 0
+    # Telemetria dos rivais; vazio ou -1 quando o jogo não informa (ex.: online).
+    composto: str = ""
+    pneus_restante: tuple[float, ...] = ()
+    energia: float = -1.0
 
 
 @dataclass(slots=True)

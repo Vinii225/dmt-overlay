@@ -8,6 +8,7 @@ from .pedais import Pedais
 from .pneus import Pneus
 from .radar import Radar
 from .relativo import Relativo
+from .rivais import Rivais
 from .sessao import Sessao
 from .stint import Stint
 from .track_limits import TrackLimits
@@ -16,6 +17,7 @@ from .volante import Volante
 WIDGETS = (
     Relativo,
     Classificacao,
+    Rivais,
     Delta,
     Motor,
     Pedais,

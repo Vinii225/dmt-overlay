@@ -66,6 +66,9 @@ class FonteDemo:
                     paradas=int(vf // 12),
                     jogador=id_ == 0,
                     tempo_estimado=ritmo,
+                    composto="Medium" if id_ % 3 else "Soft",
+                    pneus_restante=tuple(max(0.3, 1 - (vf % 12) / 12 * (0.55 + 0.03 * k + 0.01 * (id_ % 5))) for k in range(4)),
+                    energia=-1.0 if classe == "LMP2" else max(0.05, 1 - (vf % 12) / 12 * (0.85 + 0.02 * (id_ % 4))),
                 )
             )
             anterior = vf
