@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import socket
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -127,6 +128,18 @@ def montar_dados(estado: Estado, opcoes: dict[str, Any], voltas: Voltas | None =
     return dados
 
 
+class _Servidor(ThreadingHTTPServer):
+    daemon_threads = True
+    # No Windows, SO_REUSEADDR deixa outro programa abrir a mesma porta sem erro e o HUD
+    # fica mudo; lá a porta tem que ser exclusiva para o erro aparecer.
+    allow_reuse_address = sys.platform != "win32"
+
+    def server_bind(self) -> None:
+        if sys.platform == "win32":
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
+
+
 def ip_local() -> str:
     """IP deste PC na rede local, para quem transmite de outro computador."""
     try:
@@ -185,12 +198,11 @@ class ServidorHUD:
                 pass
 
         try:
-            self._servidor = ThreadingHTTPServer(("0.0.0.0" if rede else "127.0.0.1", porta), Pedido)
+            self._servidor = _Servidor(("0.0.0.0" if rede else "127.0.0.1", porta), Pedido)
         except OSError as erro:
             self.erro = f"Porta {porta} indisponível ({erro.strerror or erro})."
             log.warning("HUD: %s", self.erro)
             return False
-        self._servidor.daemon_threads = True
         self.porta = self._servidor.server_address[1]
         self.erro = ""
         threading.Thread(target=self._servidor.serve_forever, name="hud", daemon=True).start()
