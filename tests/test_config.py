@@ -25,3 +25,19 @@ def test_config_corrompida_vira_backup(tmp_path):
     assert config.geral["travado"] is True
     assert (tmp_path / "config.json.bak").exists()
     json.dumps(config.geral)
+
+
+def test_migra_config_antiga(tmp_path):
+    caminho = tmp_path / "config.json"
+    antiga = {"geral": {"tema": "padrao", "taxa_atualizacao": 30}, "widgets": {"rivais": {"qtd_hy": 5, "qtd_outras": 2}}}
+    caminho.write_text(json.dumps(antiga), encoding="utf-8")
+    config = Config(caminho)
+    assert "tema" not in config.geral
+    assert config.geral["taxa_atualizacao"] == 60
+    assert config.widget("rivais", {"qtd_minha": 5, "qtd_outras": 3}) == {"qtd_minha": 5, "qtd_outras": 2}
+
+
+def test_taxa_escolhida_nao_muda(tmp_path):
+    caminho = tmp_path / "config.json"
+    caminho.write_text(json.dumps({"geral": {"versao_config": 2, "taxa_atualizacao": 30}}), encoding="utf-8")
+    assert Config(caminho).geral["taxa_atualizacao"] == 30

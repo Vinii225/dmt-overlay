@@ -12,6 +12,7 @@ log = logging.getLogger(__name__)
 
 PADRAO_GERAL: dict[str, Any] = {
     "fonte_dados": "lmu",
+    "versao_config": 2,
     "taxa_atualizacao": 60,
     "travado": True,
     "ocultar_fora_da_pista": True,
@@ -38,6 +39,25 @@ def pasta_config() -> Path:
 
 def pasta_voltas() -> Path:
     return pasta_config() / "voltas"
+
+
+# Chaves de versões antigas que saíram; somem do config.json no próximo salvamento.
+OBSOLETAS_GERAL = ("tema",)
+OBSOLETAS_WIDGETS = {"rivais": ("qtd_hy", "qtd_p2", "qtd_gt3")}
+VERSAO_CONFIG = 2
+
+
+def migrar(dados: dict) -> dict:
+    geral = dados.setdefault("geral", {})
+    for chave in OBSOLETAS_GERAL:
+        geral.pop(chave, None)
+    for nome, chaves in OBSOLETAS_WIDGETS.items():
+        for chave in chaves:
+            dados.get("widgets", {}).get(nome, {}).pop(chave, None)
+    if geral.get("versao_config", 1) < 2 and geral.get("taxa_atualizacao") == 30:
+        geral["taxa_atualizacao"] = 60  # padrão antigo; quem não mexeu ganha a atualização mais lisa
+    geral["versao_config"] = VERSAO_CONFIG
+    return dados
 
 
 def mesclar(padrao: dict, atual: dict) -> dict:
@@ -70,7 +90,8 @@ class Config:
             except OSError:
                 pass
             return
-        self.geral = mesclar(PADRAO_GERAL, dados.get("geral", {}))
+        dados = migrar(dados)
+        self.geral = mesclar(PADRAO_GERAL, dados["geral"])
         self.widgets = dados.get("widgets", {})
 
     def salvar(self) -> None:

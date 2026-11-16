@@ -26,7 +26,6 @@ NEUTRO = QColor("#5c5c58")
 
 BOM = QColor("#0ca30c")
 ALERTA = QColor("#fab219")
-SERIO = QColor("#ec835a")
 CRITICO = QColor("#d03b3b")
 
 ACELERADOR = QColor("#0ca30c")
@@ -48,7 +47,6 @@ CLASSES = {
     "lmp3": ("P3", QColor("#9085e9")),
 }
 
-MARGEM = 8
 PASTA_FONTES = Path(__file__).parent / "recursos" / "fontes"
 _fontes_carregadas = False
 

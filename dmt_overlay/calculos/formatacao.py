@@ -17,10 +17,6 @@ def duracao(segundos: float) -> str:
     return f"{minutos:02d}:{seg:02d}"
 
 
-def diferenca(segundos: float, casas: int = 1) -> str:
-    return f"{segundos:+.{casas}f}"
-
-
 def intervalo(segundos: float, voltas: int) -> str:
     if voltas > 0:
         return f"+{voltas}V"

@@ -4,6 +4,15 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+## [0.3.0-beta.3] - 2026-11-16
+
+Ajustes da beta.2 e uma limpeza geral. Roteiro rápido:
+
+1. Abra o app: suas posições continuam, e a janela de **Configurações…** está com o mesmo visual azul dos widgets.
+2. Em **Demonstração**, ligue **Volante e inputs** e **Rivais: pneus e VE**. Nos rivais, a sua classe vem primeiro com mais carros.
+3. No LMU, confira se o volante gira para o lado certo e, perto de outra classe, a bandeira azul (classe mais rápida atrás) ou as setas (classe mais lenta à frente).
+4. Veja se o delta mostra milésimos e se tudo anda liso (a taxa vai para 60 Hz sozinha se você estava no padrão antigo de 30).
+
 ### Mudanças
 
 - O visual de transmissão virou o único: o tema antigo e a escolha de tema saíram.
@@ -11,7 +20,14 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 - **Rivais: pneus e VE** mostra todas as classes: a sua, de quem está pilotando, com o top 5 e você; as outras com o top 3 (ajustável).
 - **Tráfego multiclasse** (antes Alerta multiclasse): bandeira azul com classe mais rápida chegando ou setas com classe mais lenta à frente, mostrando só o mais perto, com barra de proximidade e piscando no último segundo da bandeira azul.
 - Delta e volta atual com 3 casas depois do ponto.
-- Atualização padrão passou de 30 para 60 Hz, para tudo andar mais liso (quem já usa pode mudar em Geral → Taxa de atualização).
+- Atualização padrão passou de 30 para 60 Hz, para tudo andar mais liso. Quem estava no padrão antigo passa para 60 sozinho; quem escolheu outro valor continua com ele.
+- Janela de configurações com a mesma paleta azul-marinho dos widgets.
+- Volante desenhado em silhueta de GT3 (pegadas, tela e botões).
+
+### Limpeza
+
+- Opções que saíram (tema e as quantidades antigas dos rivais) são removidas do `config.json` sozinhas.
+- Código sem uso removido e imagens da documentação atualizadas.
 
 ## [0.3.0-beta.2] - 2026-11-16
 
@@ -85,7 +101,8 @@ Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a 
 - Modo demonstração para posicionar os widgets sem o jogo aberto.
 - Configuração salva em `%APPDATA%\DMT Overlay`.
 
-[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.2...HEAD
+[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.3...HEAD
+[0.3.0-beta.3]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.2...v0.3.0-beta.3
 [0.3.0-beta.2]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0...v0.3.0-beta.2
 [0.2.0]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0
 [0.2.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0-beta.1
