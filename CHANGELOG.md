@@ -4,23 +4,25 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
-## [0.3.0-beta.1] - 2026-11-16
+## [0.3.0-beta.2] - 2026-11-16
 
-Versão de teste com tudo da 0.3.0. Roteiro para uma sessão só (uns 30 minutos):
+Versão de teste com tudo da 0.3.0 (a beta.1 não chegou a ser publicada). Roteiro para uma sessão só, uns 40 minutos:
 
 **Sem o jogo (modo demonstração)**
 1. Bandeja → **Configurações…** → Geral → Fonte de dados: **Demonstração**. Destrave, arraste uns widgets e trave.
 2. Aparência → Tema **Transmissão** (e volte, se quiser).
-3. Página **Relativo** → Carros de cada lado: 5. O widget deve crescer na hora.
-   Na página **Volante e inputs**, ligue o widget e ajuste o **Giro do volante** para o do seu carro.
+3. Ligue **Volante e inputs** e **Rivais: pneus e VE** nas páginas deles. No volante, ajuste o **Giro do volante** para o do seu carro.
 4. **Transmissão** → Ligar HUD → **Abrir no navegador**. A torre e a caixa de briga devem aparecer. Se for usar, adicione no OBS como Fonte de navegador (1920×1080).
 
 **No LMU (treino livre com IA)**
 5. Geral → Fonte de dados: **Le Mans Ultimate**. Na pista, teste `Ctrl+Shift+H` e `Ctrl+Shift+L` com o jogo em foco.
-6. Faça 3 voltas, pare no box para abastecer e faça mais 2. Depois, **Abrir voltas gravadas**: o tempo de cada volta deve bater com o do jogo, e depois do abastecimento o `stint` vira 2.
-7. Com o HUD aberto, confira torre, nomes das equipes e intervalo para o carro da frente.
-   No widget do volante, confira se ele gira para o lado certo e se o gráfico acompanha os pedais.
-8. Ligue **Layout separado por classe**, entre com um carro de outra classe, arrume diferente, e volte ao primeiro carro.
+6. Confira se o volante gira para o lado certo e se o gráfico acompanha os pedais. Nos **Rivais**, veja se pneu e VE dos outros carros aparecem (offline com IA deve aparecer; online pode vir "–").
+7. Faça 3 voltas, pare no box para abastecer e faça mais 2. Depois, **Abrir voltas gravadas**: o tempo de cada volta deve bater com o do jogo, e depois do abastecimento o `stint` vira 2.
+8. Com o HUD aberto, confira torre, nomes das equipes e intervalo para o carro da frente.
+9. Ligue **Layout separado por classe**, entre com um carro de outra classe, arrume diferente, e volte ao primeiro carro.
+
+**Modo narrador (assistindo)**
+10. Transmissão → **Modo narrador** ligado. Saia do carro e assista a corrida como espectador: widgets e HUD devem seguir a briga mais apertada. Teste também **Líder** e **Carro pelo número**.
 
 Deu problema? Abra uma issue com o `dmt-overlay.log` (Geral → Abrir pasta de configuração).
 
@@ -74,8 +76,8 @@ Versão de teste. Confira principalmente o lado do radar (esquerda/direita) e a 
 - Modo demonstração para posicionar os widgets sem o jogo aberto.
 - Configuração salva em `%APPDATA%\DMT Overlay`.
 
-[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.1...HEAD
-[0.3.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0...v0.3.0-beta.1
+[Não lançado]: https://github.com/Vinii225/dmt-overlay/compare/v0.3.0-beta.2...HEAD
+[0.3.0-beta.2]: https://github.com/Vinii225/dmt-overlay/compare/v0.2.0...v0.3.0-beta.2
 [0.2.0]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0
 [0.2.0-beta.1]: https://github.com/Vinii225/dmt-overlay/compare/v0.1.0...v0.2.0-beta.1
 [0.1.0]: https://github.com/Vinii225/dmt-overlay/releases/tag/v0.1.0
