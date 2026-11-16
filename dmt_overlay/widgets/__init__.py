@@ -11,6 +11,7 @@ from .relativo import Relativo
 from .sessao import Sessao
 from .stint import Stint
 from .track_limits import TrackLimits
+from .volante import Volante
 
 WIDGETS = (
     Relativo,
@@ -18,6 +19,7 @@ WIDGETS = (
     Delta,
     Motor,
     Pedais,
+    Volante,
     Combustivel,
     Pneus,
     Sessao,

@@ -33,6 +33,7 @@
 | **Track limits** | Pontos de track limits acumulados e quanto falta para a punição. |
 | **Stint e estratégia** | Tempo e voltas do stint, janela de box (primeira e última volta para parar), paradas restantes e quanto abastecer de combustível e energia virtual. |
 | **Radar** | Só aparece com carro por perto (15 m por padrão, ajustável): mostra os carros ao redor na cor da classe e acende a lateral quando há alguém lado a lado. |
+| **Volante e inputs** | Volante que gira com o seu, com a marcha no centro e um anel de RPM, mais o gráfico do acelerador e do freio nos últimos segundos (amarelo quando ABS ou TC atuam). Vem desligado. |
 | **Alerta multiclasse** | Só aparece quando precisa: carro mais rápido de outra classe chegando por trás, ou tráfego mais lento logo à frente. |
 
 ## Instalação

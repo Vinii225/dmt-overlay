@@ -12,12 +12,14 @@ Versão de teste com tudo da 0.3.0. Roteiro para uma sessão só (uns 30 minutos
 1. Bandeja → **Configurações…** → Geral → Fonte de dados: **Demonstração**. Destrave, arraste uns widgets e trave.
 2. Aparência → Tema **Transmissão** (e volte, se quiser).
 3. Página **Relativo** → Carros de cada lado: 5. O widget deve crescer na hora.
+   Na página **Volante e inputs**, ligue o widget e ajuste o **Giro do volante** para o do seu carro.
 4. **Transmissão** → Ligar HUD → **Abrir no navegador**. A torre e a caixa de briga devem aparecer. Se for usar, adicione no OBS como Fonte de navegador (1920×1080).
 
 **No LMU (treino livre com IA)**
 5. Geral → Fonte de dados: **Le Mans Ultimate**. Na pista, teste `Ctrl+Shift+H` e `Ctrl+Shift+L` com o jogo em foco.
 6. Faça 3 voltas, pare no box para abastecer e faça mais 2. Depois, **Abrir voltas gravadas**: o tempo de cada volta deve bater com o do jogo, e depois do abastecimento o `stint` vira 2.
 7. Com o HUD aberto, confira torre, nomes das equipes e intervalo para o carro da frente.
+   No widget do volante, confira se ele gira para o lado certo e se o gráfico acompanha os pedais.
 8. Ligue **Layout separado por classe**, entre com um carro de outra classe, arrume diferente, e volte ao primeiro carro.
 
 Deu problema? Abra uma issue com o `dmt-overlay.log` (Geral → Abrir pasta de configuração).
@@ -29,6 +31,7 @@ Deu problema? Abra uma issue com o `dmt-overlay.log` (Geral → Abrir pasta de c
 - Janela de configurações: opções gerais, aparência, atalhos e uma página por widget, sem editar o `config.json`.
 - Layout separado por classe: posições e widgets ligados de cada classe, trocando sozinho ao mudar de carro (desligado por padrão).
 - Tema Transmissão, com visual de TV: azul-marinho, fonte condensada, sobrenomes em caixa alta e faixa da classe.
+- Widget **Volante e inputs** (desligado por padrão): volante que gira com a marcha no centro, anel de RPM e gráfico do acelerador e freio nos últimos segundos, com ABS e TC em amarelo.
 - HUD de transmissão para OBS: torre de classificação por classe e caixa de briga com o carro da frente, servida pelo próprio app (Configurações → Transmissão).
 
 ### Mudanças

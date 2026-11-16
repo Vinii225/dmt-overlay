@@ -32,6 +32,7 @@ LAYOUT = {
     "multiclasse": (380, 200),
     "stint": (380, 250),
     "radar": (20, 200),
+    "volante": (380, 364),
 }
 
 
@@ -69,7 +70,7 @@ def main() -> None:
     quadro = Quadro(estado, resumo, 0.0, estrategia.atualizar(estado, resumo))
 
     config = Config(Path(tempfile.mkdtemp()) / "config.json")
-    largura, altura = round(1370 * escala), round(400 * escala)
+    largura, altura = round(1370 * escala), round(452 * escala)
     tela = QPixmap(largura, altura)
     p = QPainter(tela)
     gradiente = QLinearGradient(0, 0, largura, altura)
@@ -78,7 +79,17 @@ def main() -> None:
     p.fillRect(tela.rect(), gradiente)
     for classe in WIDGETS:
         widget = classe(config.widget(classe.nome, classe.padrao()), escala)
-        widget.atualizar(quadro)
+        if classe.nome == "volante":
+            # O gráfico precisa de alguns segundos de histórico para aparecer na prévia.
+            for i in range(150):
+                t = i / 30
+                estado.jogador.acelerador = max(0.0, min(1.0, 1.4 - abs(math.sin(t * 0.9)) * 2.2))
+                estado.jogador.freio = max(0.0, math.sin(t * 0.9 + 0.4) * 1.3 - 0.4) if math.sin(t * 0.9) > 0.3 else 0.0
+                estado.jogador.abs_ativo = estado.jogador.freio > 0.8
+                estado.jogador.volante = 0.35 * math.sin(t * 1.3)
+                widget.atualizar(Quadro(estado, resumo, t))
+        else:
+            widget.atualizar(quadro)
         x, y = LAYOUT[classe.nome]
         imagem = widget.grab()
         p.drawPixmap(QPoint(round(x * escala), round(y * escala)), imagem)
