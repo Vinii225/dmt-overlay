@@ -91,30 +91,26 @@ class Volante(WidgetOverlay):
         self._desenhar_grafico(p, QRectF(138, 8, self.largura - 146, self.altura - 16), pontos)
 
     def _desenhar_volante(self, p: QPainter, centro: QPointF, angulo: float) -> None:
-        """Volante de GT3: aro retangular de cantos redondos, miolo com tela e dois raios."""
+        """Volante de GT3 em silhueta: pegadas laterais mais altas, tela no meio e botões dos lados."""
         p.save()
         p.translate(centro)
         p.rotate(angulo)
-        largura, altura = 50.0, 34.0
-        p.setBrush(Qt.BrushStyle.NoBrush)
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
-        p.drawRoundedRect(QRectF(-largura / 2, -altura / 2, largura, altura), 9, 9)
-        # Pegadas mais grossas nas laterais, como no volante de GT3.
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 8, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        for x in (-largura / 2, largura / 2):
-            p.drawLine(QPointF(x, -altura / 2 + 9), QPointF(x, altura / 2 - 9))
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawLine(QPointF(-largura / 2, 2), QPointF(-12, 2))
-        p.drawLine(QPointF(largura / 2, 2), QPointF(12, 2))
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 2))
-        p.setBrush(tema.FUNDO_FIM)
-        p.drawRoundedRect(QRectF(-12, -8, 24, 17), 4, 4)
-        # Tela do volante e a marca de centro no topo do aro, para ver o quanto girou.
+        corpo = QPainterPath()
+        corpo.addRoundedRect(QRectF(-27, -15, 12, 30), 5, 5)
+        corpo.addRoundedRect(QRectF(15, -15, 12, 30), 5, 5)
+        corpo.addRoundedRect(QRectF(-19, -11, 38, 22), 4, 4)
+        p.fillPath(corpo.simplified(), tema.TEXTO_SECUNDARIO)
         p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(tema.TRILHO)
-        p.drawRoundedRect(QRectF(-7, -4.5, 14, 6), 1.5, 1.5)
-        p.setPen(QPen(tema.DESTAQUE, 5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.FlatCap))
-        p.drawLine(QPointF(-4, -altura / 2), QPointF(4, -altura / 2))
+        p.setBrush(tema.FUNDO_FIM)
+        p.drawRoundedRect(QRectF(-9, -6, 18, 10), 2, 2)
+        for x in (-13.5, 13.5):
+            for y in (-5.0, 1.0, 7.0):
+                p.drawEllipse(QPointF(x, y), 1.6, 1.6)
+        for x in (-4.0, 0.0, 4.0):
+            p.drawEllipse(QPointF(x, 7.5), 1.3, 1.3)
+        # Marca de centro no topo, para ver o quanto girou.
+        p.setBrush(tema.DESTAQUE)
+        p.drawRoundedRect(QRectF(-3, -11, 6, 3), 1, 1)
         p.restore()
 
     def _desenhar_grafico(self, p: QPainter, area: QRectF, pontos) -> None:
