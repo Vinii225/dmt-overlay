@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from . import __version__
+from . import __version__, tema
 from .atalhos import interpretar
 from .bandeja import abrir_pasta
 from .config import pasta_config, pasta_voltas
@@ -323,6 +323,12 @@ class JanelaConfiguracoes(QWidget):
         app, geral = self.app, self.app.config.geral
         pagina = _Pagina("Aparência", "Vale para todos os widgets.")
         pagina.secao("Widgets")
+        estilo = QComboBox()
+        for chave, dados in tema.TEMAS.items():
+            estilo.addItem(dados["nome"], chave)
+        estilo.currentIndexChanged.connect(lambda i: app.definir_tema(estilo.itemData(i)))
+        self._ligar(estilo, lambda: geral["tema"], lambda c, v: c.setCurrentIndex(max(0, c.findData(v))))
+        pagina.campo("Tema", estilo, "Transmissão: azul-marinho, fonte condensada e sobrenomes em caixa alta, no estilo da TV.")
         tamanho = self._slider(80, 150, 5, lambda: geral["escala"], app.definir_escala)
         pagina.campo("Tamanho", tamanho, "Para telas grandes ou triplas.")
         pagina.campo("Opacidade", self._slider(40, 100, 5, lambda: geral["opacidade"], app.definir_opacidade))

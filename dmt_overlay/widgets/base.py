@@ -120,8 +120,8 @@ class WidgetOverlay(QWidget):
         caixa = QRectF(0.5, 0.5, base.width() - 1, base.height() - 1)
         caminho = QPainterPath()
         caminho.addRoundedRect(caixa, tema.RAIO, tema.RAIO)
-        p.fillPath(caminho, tema.FUNDO)
-        p.setPen(QPen(tema.DESTAQUE if not self._travado else tema.BORDA, 1.5 if not self._travado else 1))
+        p.fillPath(caminho, tema.pincel_fundo(base.height()))
+        p.setPen(QPen(tema.DESTAQUE if not self._travado else tema.BORDA, 1.5 if not self._travado else tema.LARGURA_BORDA))
         p.drawPath(caminho)
         p.setClipPath(caminho)
         if self._dados is not None:

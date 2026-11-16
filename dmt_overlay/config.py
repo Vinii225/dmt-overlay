@@ -22,6 +22,7 @@ PADRAO_GERAL: dict[str, Any] = {
     "gravar_voltas": True,
     "layout_por_classe": False,
     "layouts": {},
+    "tema": "padrao",
 }
 
 
