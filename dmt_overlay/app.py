@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 from PySide6.QtCore import QLockFile
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from . import __version__, tema
+from . import __version__
 from .atalhos import AtalhosGlobais
 from .atualizacao import VerificadorAtualizacao
 from .bandeja import Bandeja
@@ -49,7 +49,6 @@ class Aplicativo:
         self.classe = ""
         self.nome_classe = ""
         self._ouvintes: list[Callable[[], None]] = []
-        tema.aplicar(config.geral["tema"])
         self.widgets: dict[str, WidgetOverlay] = {}
         for classe in WIDGETS:
             dados = config.widget(classe.nome, classe.padrao())
@@ -251,14 +250,6 @@ class Aplicativo:
         self.config.geral["narrador"][chave] = valor
         if chave == "modo":
             self.foco = Foco()
-        self.salvar()
-        self.notificar()
-
-    def definir_tema(self, nome: str) -> None:
-        self.config.geral["tema"] = nome
-        tema.aplicar(nome)
-        for widget in self.widgets.values():
-            widget.reconfigurar()
         self.salvar()
         self.notificar()
 

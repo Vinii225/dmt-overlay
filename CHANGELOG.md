@@ -4,6 +4,12 @@ Todas as mudanças relevantes do projeto. O formato segue o [Keep a Changelog](h
 
 ## [Não lançado]
 
+### Mudanças
+
+- O visual de transmissão virou o único: o tema antigo e a escolha de tema saíram.
+- **Volante e inputs** redesenhado: volante de GT3, marcha e velocidade à direita dele e o gráfico do acelerador e freio depois, com uma faixa fina de RPM.
+- **Rivais: pneus e VE** mostra todas as classes: a sua, de quem está pilotando, com o top 5 e você; as outras com o top 3 (ajustável).
+
 ## [0.3.0-beta.2] - 2026-11-16
 
 Versão de teste com tudo da 0.3.0 (a beta.1 não chegou a ser publicada). Roteiro para uma sessão só, uns 40 minutos:

@@ -31,16 +31,16 @@ def cor_rpm(fracao: float, troca: float) -> QColor:
 class Volante(WidgetOverlay):
     nome = "volante"
     titulo = "Volante e inputs"
-    largura = 340
-    altura = 76
+    largura = 330
+    altura = 64
     posicao_padrao = (790, 960)
     ativo_padrao = False
     opcoes_padrao = {"janela": 5.0, "giro": 540, "luz_troca": 0.94, "unidade_velocidade": "kmh"}
-    descricao = "Volante girando com a marcha no centro, anel de RPM e o gráfico do acelerador e freio nos últimos segundos."
+    descricao = "Volante de GT3 girando, marcha e velocidade ao lado e o gráfico do acelerador e freio nos últimos segundos."
     opcoes = {
         "janela": Opcao("Tempo no gráfico", "Quantos segundos de acelerador e freio aparecem.", 2, 10, 1, " s"),
         "giro": Opcao("Giro do volante", "Use o mesmo do carro no jogo para o desenho bater.", 180, 1080, 10, "°"),
-        "luz_troca": Opcao("Luz de troca", "Porcentagem do RPM máximo em que o anel pisca.", 80, 99, 1, "%", fator=100),
+        "luz_troca": Opcao("Luz de troca", "Porcentagem do RPM máximo em que a marcha pisca.", 80, 99, 1, "%", fator=100),
         "unidade_velocidade": Opcao("Velocidade em", escolhas=(("kmh", "km/h"), ("mph", "mph"))),
     }
 
@@ -73,55 +73,49 @@ class Volante(WidgetOverlay):
             j.marcha,
             round(fracao, 3),
             piscar,
-            round(j.acelerador, 2),
-            round(j.freio, 2),
             round(j.velocidade * fator),
             pontos,
         )
 
     def desenhar(self, p: QPainter, dados) -> None:
-        angulo, marcha, fracao, piscar, acel, freio, velocidade, pontos = dados
-        self._desenhar_volante(p, QPointF(40, self.altura / 2), angulo, marcha, fracao, piscar)
-        self._desenhar_grafico(p, QRectF(84, 9, 196, self.altura - 18), pontos)
-        topo, base = 9.0, self.altura - 9.0
-        barra(p, QRectF(288, topo, 8, base - topo), acel, tema.ACELERADOR, vertical=True, raio=2)
-        barra(p, QRectF(300, topo, 8, base - topo), freio, tema.FREIO, vertical=True, raio=2)
-        texto(p, QRectF(308, 14, 30, 26), str(velocidade), tema.TEXTO, 12, True, CENTRO)
-        rotulo(p, QRectF(308, 40, 30, 12), "km/h" if self.config["unidade_velocidade"] == "kmh" else "mph", CENTRO)
+        angulo, marcha, fracao, piscar, velocidade, pontos = dados
+        self._desenhar_volante(p, QPointF(38, self.altura / 2), angulo)
+        # Marcha e velocidade à direita do volante, com uma faixa fina de RPM embaixo.
+        cor_marcha = tema.CRITICO if piscar else tema.TEXTO
+        texto(p, QRectF(74, 4, 56, 30), nome_marcha(marcha), cor_marcha, 20, True, CENTRO)
+        texto(p, QRectF(74, 31, 56, 16), str(velocidade), tema.TEXTO_SECUNDARIO, 10, True, CENTRO)
+        rotulo(p, QRectF(74, 45, 56, 10), "km/h" if self.config["unidade_velocidade"] == "kmh" else "mph", CENTRO)
+        troca = self.config["luz_troca"]
+        cor = (tema.CRITICO if piscar else tema.TRILHO) if fracao >= troca else cor_rpm(fracao, troca)
+        barra(p, QRectF(78, self.altura - 8, 48, 3), min(1.0, fracao / troca) if fracao < troca else 1.0, cor, raio=1.5)
+        self._desenhar_grafico(p, QRectF(138, 8, self.largura - 146, self.altura - 16), pontos)
 
-    def _desenhar_volante(self, p: QPainter, centro: QPointF, angulo: float, marcha: int, fracao: float, piscar: bool) -> None:
-        raio_anel = 32.0
-        caixa_anel = QRectF(centro.x() - raio_anel, centro.y() - raio_anel, raio_anel * 2, raio_anel * 2)
-        # Anel de RPM: 270° abrindo embaixo, enche no sentido horário.
-        p.setBrush(Qt.BrushStyle.NoBrush)
-        p.setPen(QPen(tema.TRILHO, 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawArc(caixa_anel, 225 * 16, -270 * 16)
-        if fracao > 0:
-            troca = self.config["luz_troca"]
-            cor = (tema.CRITICO if piscar else tema.TRILHO) if fracao >= troca else cor_rpm(fracao, troca)
-            p.setPen(QPen(cor, 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-            p.drawArc(caixa_anel, 225 * 16, round(-270 * 16 * min(1.0, fracao / troca)))
-
+    def _desenhar_volante(self, p: QPainter, centro: QPointF, angulo: float) -> None:
+        """Volante de GT3: aro retangular de cantos redondos, miolo com tela e dois raios."""
         p.save()
         p.translate(centro)
         p.rotate(angulo)
-        r = 24.0
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 4))
-        p.drawEllipse(QPointF(0, 0), r, r)
-        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 3.5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        for x1, y1, x2, y2 in ((-r, 2, -10, 4), (r, 2, 10, 4), (0, 12, 0, r)):
-            p.drawLine(QPointF(x1, y1), QPointF(x2, y2))
-        # Marca de centro no topo do aro, para ver o quanto o volante girou.
-        p.setPen(QPen(tema.DESTAQUE, 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawLine(QPointF(0, -r - 1), QPointF(0, -r + 3))
-        # Miolo sólido para a marcha não brigar com os raios.
+        largura, altura = 50.0, 34.0
+        p.setBrush(Qt.BrushStyle.NoBrush)
+        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+        p.drawRoundedRect(QRectF(-largura / 2, -altura / 2, largura, altura), 9, 9)
+        # Pegadas mais grossas nas laterais, como no volante de GT3.
+        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 8, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
+        for x in (-largura / 2, largura / 2):
+            p.drawLine(QPointF(x, -altura / 2 + 9), QPointF(x, altura / 2 - 9))
+        p.setPen(QPen(tema.TEXTO_SECUNDARIO, 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
+        p.drawLine(QPointF(-largura / 2, 2), QPointF(-12, 2))
+        p.drawLine(QPointF(largura / 2, 2), QPointF(12, 2))
         p.setPen(QPen(tema.TEXTO_SECUNDARIO, 2))
         p.setBrush(tema.FUNDO_FIM)
-        p.drawEllipse(QPointF(0, 0), 12, 12)
+        p.drawRoundedRect(QRectF(-12, -8, 24, 17), 4, 4)
+        # Tela do volante e a marca de centro no topo do aro, para ver o quanto girou.
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(tema.TRILHO)
+        p.drawRoundedRect(QRectF(-7, -4.5, 14, 6), 1.5, 1.5)
+        p.setPen(QPen(tema.DESTAQUE, 5, Qt.PenStyle.SolidLine, Qt.PenCapStyle.FlatCap))
+        p.drawLine(QPointF(-4, -altura / 2), QPointF(4, -altura / 2))
         p.restore()
-
-        cor_marcha = tema.CRITICO if piscar else tema.TEXTO
-        texto(p, QRectF(centro.x() - 12, centro.y() - 12, 24, 22), nome_marcha(marcha), cor_marcha, 15, True, CENTRO)
 
     def _desenhar_grafico(self, p: QPainter, area: QRectF, pontos) -> None:
         p.setPen(Qt.PenStyle.NoPen)

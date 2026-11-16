@@ -5,7 +5,7 @@ from PySide6.QtGui import QPainter
 
 from .. import tema
 from ..calculos.formatacao import intervalo, numero_carro, tempo_volta
-from .base import CENTRO, DIR, Opcao, WidgetOverlay, rotulo, selo_classe, texto
+from .base import CENTRO, DIR, Opcao, WidgetOverlay, selo_classe, texto
 
 ALTURA_LINHA = 21
 CABECALHO = 22
@@ -81,16 +81,12 @@ class Classificacao(WidgetOverlay):
 
     def desenhar(self, p: QPainter, dados) -> None:
         classe, total, linhas = dados
-        if tema.FAIXA_CABECALHO:
-            faixa = QRectF(4, 3, self.largura - 8, 17)
-            p.setPen(Qt.PenStyle.NoPen)
-            p.setBrush(tema.classe(classe)[1] if classe != "Geral" else tema.TRILHO)
-            p.drawRoundedRect(faixa, 3, 3)
-            texto(p, faixa, (classe or "Classificação").upper(), tema.TEXTO, 9, True, CENTRO)
-            texto(p, faixa.adjusted(0, 0, -6, 0), str(total), tema.TEXTO, 7.5, False, DIR)
-        else:
-            texto(p, QRectF(10, 4, 200, 16), classe or "Classificação", tema.TEXTO, 9, True)
-            rotulo(p, QRectF(170, 4, 162, 16), f"{total} carros", DIR)
+        faixa = QRectF(4, 3, self.largura - 8, 17)
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(tema.classe(classe)[1] if classe != "Geral" else tema.TRILHO)
+        p.drawRoundedRect(faixa, 3, 3)
+        texto(p, faixa, (classe or "Classificação").upper(), tema.TEXTO, 9, True, CENTRO)
+        texto(p, faixa.adjusted(0, 0, -6, 0), str(total), tema.TEXTO, 7.5, False, DIR)
         y = float(CABECALHO + 2)
         for pos, cls, numero, piloto, ultima, gap, boxes, jogador, salto in linhas:
             linha = QRectF(4, y, self.largura - 8, ALTURA_LINHA - 2)

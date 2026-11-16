@@ -17,6 +17,8 @@
 
 ![Prévia dos widgets](docs/previa.png)
 
+Visual de transmissão de endurance: azul-marinho, fonte condensada, sobrenomes em caixa alta e a cor de cada classe.
+
 ## Widgets
 
 Todos ligam, desligam e se ajustam em **Configurações**. Os marcados com * vêm desligados.
@@ -27,7 +29,7 @@ Todos ligam, desligam e se ajustam em **Configurações**. Os marcados com * vê
 |---|---|
 | **Marcha e RPM** | Marcha, velocidade, RPM e luzes de troca. Avisa o limitador de box. |
 | **Pedais** | Acelerador, freio, embreagem e volante, com TC e ABS atuando. |
-| **Volante e inputs*** | Volante girando com a marcha no centro e anel de RPM, mais o gráfico do acelerador e do freio nos últimos segundos (amarelo com ABS ou TC). |
+| **Volante e inputs*** | Volante de GT3 girando com o seu, marcha e velocidade ao lado e o gráfico do acelerador e do freio nos últimos segundos (amarelo com ABS ou TC). |
 | **Delta** | Delta para a sua melhor volta, volta atual (vermelha se invalidada), última e melhor. |
 | **Eletrônica** | Balanço de freio, TC, corte e slip, ABS e mapa de motor. |
 | **Track limits** | Pontos acumulados e quanto falta para a punição. |
@@ -49,7 +51,7 @@ Todos ligam, desligam e se ajustam em **Configurações**. Os marcados com * vê
 | **Combustível** | Voltas restantes (combustível e energia virtual), média por volta e quanto abastecer. |
 | **Stint e estratégia** | Tempo e voltas do stint, janela de box e paradas restantes. |
 | **Pneus** | Temperatura por faixa, pressão, desgaste e freio. Azul = frio, vermelho = quente. |
-| **Rivais: pneus e VE*** | Pneu e energia virtual do topo da sua classe: 5 no Hypercar, 3 no LMP2 e no LMGT3. Online pode aparecer "–" se o jogo não mandar. |
+| **Rivais: pneus e VE*** | Pneu e energia virtual por classe: a classe em que você está pilotando mostra o top 5 (e você), as outras só o top 3. Online pode aparecer "–" se o jogo não mandar. |
 
 ## Instalação
 
@@ -82,17 +84,11 @@ Tudo vale na hora e salva sozinho. Para posicionar sem abrir o jogo, use **Geral
 ![Janela de configurações](docs/configuracoes.png)
 
 - **Geral**: layout separado por classe, esconder fora da pista, fonte de dados, taxa de atualização, gravação das voltas e aviso de atualização.
-- **Aparência**: tema, tamanho (80% a 150%) e opacidade.
+- **Aparência**: tamanho (80% a 150%) e opacidade.
 - **Transmissão**: HUD para OBS e modo narrador.
 - **Uma página por widget**: as opções dele (unidades, carros no relativo, luz de troca, alcance do radar…) e **Restaurar padrão**.
 
 **Layout por classe**: cada classe (Hypercar, LMP2, GT3…) guarda as próprias posições e widgets ligados, e a troca é automática quando você entra com outro carro.
-
-### Tema Transmissão
-
-**Aparência → Tema → Transmissão** muda as cores e o estilo de todos os widgets para o visual de TV: azul-marinho, fonte condensada, sobrenomes em caixa alta e faixa da classe.
-
-![Widgets no tema Transmissão](docs/tema-transmissao.png)
 
 ### HUD para transmissão (OBS)
 
@@ -123,7 +119,7 @@ O planejamento fica no [kanban público](https://github.com/users/Vinii225/proje
 
 ## Créditos
 
-- Fonte do tema Transmissão: [Barlow Condensed](https://github.com/jpt/barlow) (SIL Open Font License).
+- Fonte: [Barlow Condensed](https://github.com/jpt/barlow) (SIL Open Font License).
 - Mapeamento da memória compartilhada do LMU: [pyLMUSharedMemory](https://github.com/TinyPedal/pyLMUSharedMemory) (MIT).
 - Inspirado no [TinyPedal](https://github.com/TinyPedal/TinyPedal).
 
